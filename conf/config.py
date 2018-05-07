@@ -59,7 +59,7 @@ template = os.path.join(HOME, 'template')
 # 服务地址
 HOST = '0.0.0.0'
 # 服务端口
-PORT = 8084
+PORT = 8083
 #redis
 redis_url = 'redis://127.0.0.1:6379/0'
 #用户注册状态
@@ -73,3 +73,7 @@ ALLOW_LOGIN_MOBILE = ['13802438716']
 #cookie 配置
 # cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'192.168.0.103', 'path':'/posp'}
 cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'127.0.0.1', 'path':'/house'}
+# 上传的文件存放位置
+SAVE_PATH = '/Users/admin/Documents/develop/myproject/house/house_mis/bin/static/upload/icon/'
+# 链接前缀
+BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + '/static/upload/icon/'

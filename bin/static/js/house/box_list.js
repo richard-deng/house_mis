@@ -342,96 +342,39 @@ $(document).ready(function(){
         });
 
     });
+    */
 
-    $('#userCreate').click(function(){
-        $('#userCreateForm').resetForm();
+    $('#box_create').click(function(){
+        $('#boxCreateForm').resetForm();
         $("label.error").remove();
-        $('#userCreateModal').modal();
+        $('#boxCreateModal').modal();
     });
 
-    $('#userCreateSubmit').click(function(){
+    $('#boxCreateSubmit').click(function(){
 
-        var user_create_vt = $('#userCreateForm').validate({
+        var box_create_vt = $('#boxCreateForm').validate({
             rules: {
-                mobile_add: {
-                    required: true,
-                    // maxlength: 16
-                    isMobile: '#mobile_add'
-                },
-                email_add: {
-                    required: true,
-                    email: true,
-                    maxlength: 75
-                },
-                name_add: {
+                box_name_add: {
                     required: true,
                     maxlength: 32
                 },
-                idnumber_add: {
+                box_priority_add: {
                     required: false,
-                    maxlength: 20
-                },
-                province_add: {
-                    required: false,
-                    maxlength: 10
-                },
-                city_add: {
-                    required: false,
-                    maxlength: 32
-                },
-                bankname_add: {
-                    required: false,
-                    maxlength: 256
-                },
-                bankuser_add: {
-                    required: false,
-                    maxlength: 32
-                },
-                bankaccount_add: {
-                    required: false,
-                    maxlength: 32
+                    maxlength: 20,
+                    digits: true
                 }
-
             },
             messages: {
-                mobile_add: {
-                    required: '请输入手机号',
-                    // maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                email_add: {
-                    required: '请输入邮箱',
-                    email: "请输入正确格式的电子邮件",
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
 
-                name_add: {
-                    required: '请输入商户名称',
+                box_name_add: {
+                    required: '请输入名称',
                     maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
                 },
-                idnumber_add: {
-                    required: '请输入身份证号',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                province_add: {
-                    required: '请输入省份',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                city_add: {
-                    required: '请输入城市',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                bankname_add: {
-                    required: '请输入开户行名称',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                bankuser_add: {
-                    required: '请输入持卡人名称',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                bankaccount_add: {
-                    required: '请输入银行账号',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
+                box_priority_add: {
+                    required: '请输入优先级',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串"),
+                    digits: '必须输入整数'
+                }
             },
             errorPlacement: function(error, element){
                 if(element.is(':checkbox')){
@@ -442,8 +385,12 @@ $(document).ready(function(){
             }
         });
 
-        var ok = user_create_vt.form();
+        var ok = box_create_vt.form();
         if(!ok){
+            return false;
+        }
+        icon_src = $("#box_icon_url_add")[0].src;
+        if(icon_src === "") {
             return false;
         }
 
@@ -451,18 +398,13 @@ $(document).ready(function(){
 
         var post_data = {};
         post_data.se_userid = se_userid;
-        post_data.mobile = $('#mobile_add').val();
-        post_data.email = $('#email_add').val();
-        post_data.name = $('#name_add').val();
-        post_data.idnumber = $('#idnumber_add').val();
-        post_data.province = $('#province_add').val();
-        post_data.city = $('#city_add').val();
-        post_data.bankname = $('#bankname_add').val();
-        post_data.bankuser = $('#bankuser_add').val();
-        post_data.bankaccount = $('#bankaccount_add').val();
+        post_data.name = $('#box_name_add').val();
+        post_data.priority = $('#box_priority_add').val();
+        post_data.available = $('#box_available_add').val();
+        post_data.icon = $("#box_icon_name_add").text();
 
         $.ajax({
-	        url: '/house/v1/api/merchant/create',
+	        url: '/house/v1/api/box/create',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,
@@ -477,8 +419,8 @@ $(document).ready(function(){
                 }
                 else {
                     toastr.success('添加成功');
-                    $("#userCreateForm").resetForm();
-                    $("#userCreateModal").modal('hide');
+                    $("#boxCreateForm").resetForm();
+                    $("#boxCreateModal").modal('hide');
                     $('#boxList').DataTable().draw();
                 }
 	        },
@@ -488,6 +430,37 @@ $(document).ready(function(){
         });
 
     });
-    */
+
 
 });
+
+function upload_file(obj) {
+    console.log("hello file upload");
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#iconCreateUpload").val();
+    formData.append("file", $("#iconCreateUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/house/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#box_icon_url_add").attr('src', src).show();
+            $("#box_icon_name_add").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
