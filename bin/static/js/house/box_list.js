@@ -81,6 +81,16 @@ $(document).ready(function(){
         },
         'columnDefs': [
             {
+                targets: 4,
+                render: function (data, type, full) {
+                    if (data === 1) {
+                        return '启用'
+                    } else {
+                        return '关闭'
+                    }
+                }
+            },
+            {
                 targets: 7,
                 data: '操作',
                 render: function(data, type, full) {
@@ -194,93 +204,30 @@ $(document).ready(function(){
 
     });
 
-    /*
-    $('#userViewSubmit').click(function(){
-        var user_edit_vt = $('#userViewForm').validate({
+
+    $('#boxViewSubmit').click(function(){
+        var box_view_vt = $('#boxViewForm').validate({
             rules: {
-                mobile: {
-                    required: true,
-                    isMobile: '#mobile'
-                },
-                email: {
-                    required: true,
-                    email: true,
-                    maxlength: 75
-                },
-                name: {
+                box_name_view: {
                     required: true,
                     maxlength: 32
                 },
-                idnumber: {
+                box_priority_view: {
                     required: false,
-                    maxlength: 20
-                },
-                province: {
-                    required: false,
-                    maxlength: 10
-                },
-                city: {
-                    required: false,
-                    maxlength: 32
-                },
-                bankname: {
-                    required: false,
-                    maxlength: 256
-                },
-                bankuser: {
-                    required: false,
-                    maxlength: 32
-                },
-                bankaccount: {
-                    required: false,
-                    maxlength: 32
+                    maxlength: 20,
+                    digits: true
                 }
             },
             messages: {
-                mobile: {
-                    required: '请输入手机号',
-                    // maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                email: {
-                    required: '请输入邮箱',
-                    email: "请输入正确格式的电子邮件",
+                box_name_view: {
+                    required: '请输入名称',
                     maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
                 },
-
-                name: {
-                    required: '请输入商户名称',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-                idnumber: {
-                    required: '请输入身份证号',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-
-                province: {
-                    required: '请输入省份',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-
-                city: {
-                    required: '请输入城市',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-
-                bankname: {
-                    required: '请输入开户行名称',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-
-                bankuser: {
-                    required: '请输入持卡人名称',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                },
-
-                bankaccount: {
-                    required: '请输入银行账号',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                box_priority_view: {
+                    required: '请输入优先级',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串"),
+                    digits: '必须输入整数'
                 }
-
             },
             errorPlacement: function(error, element){
                 if(element.is(':checkbox')){
@@ -291,8 +238,13 @@ $(document).ready(function(){
             }
         });
 
-        var ok = user_edit_vt.form();
+        var ok = box_view_vt.form();
         if(!ok){
+            return false;
+        }
+
+        icon_src = $("#box_icon_url_view")[0].src;
+        if(icon_src === "") {
             return false;
         }
 
@@ -300,19 +252,14 @@ $(document).ready(function(){
 
         var post_data = {};
         post_data.se_userid = se_userid;
-        post_data.merchant_id = $('#view_user_id').text();
-        post_data.mobile = $('#mobile').val();
-        post_data.email = $('#email').val();
-        post_data.name = $('#name').val();
-        post_data.idnumber = $('#idnumber').val();
-        post_data.province = $('#province').val();
-        post_data.city = $('#city').val();
-        post_data.bankname = $('#bankname').val();
-        post_data.bankuser = $('#bankuser').val();
-        post_data.bankaccount = $('#bankaccount').val();
+        post_data.name = $('#box_name_view').val();
+        post_data.priority = $('#box_priority_view').val();
+        post_data.available = $('#box_available_view').val();
+        post_data.icon = $("#box_icon_name_view").text();
+        post_data.box_id = $("#view_box_id").text();
 
         $.ajax({
-	        url: '/house/v1/api/merchant/view',
+	        url: '/house/v1/api/box/view',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,
@@ -327,8 +274,8 @@ $(document).ready(function(){
                 }
                 else {
                     toastr.success('保存修改成功');
-                    $("#userViewForm").resetForm();
-                    $("#userViewModal").modal('hide');
+                    $("#boxViewForm").resetForm();
+                    $("#boxViewModal").modal('hide');
                     $('#boxList').DataTable().draw();
                 }
 	        },
@@ -338,7 +285,7 @@ $(document).ready(function(){
         });
 
     });
-    */
+
 
     $('#box_create').click(function(){
         $('#boxCreateForm').resetForm();

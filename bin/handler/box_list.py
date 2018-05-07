@@ -91,6 +91,14 @@ class BoxViewHandler(BaseHandler):
         Field('box_id', T_INT, False)
     ]
 
+    _post_handler_fields = [
+        Field('box_id', T_INT, False),
+        Field('name', T_STR, False),
+        Field('available', T_INT, False),
+        Field('priority', T_INT, False),
+        Field('icon', T_STR, False),
+    ]
+
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self
     def _get_handler(self):
@@ -104,5 +112,19 @@ class BoxViewHandler(BaseHandler):
         data['icon_name'] = icon_name
         log.debug('BoxViewHandler|get|data=%s', data)
         return success(data=data)
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _post_handler(self):
+        params = self.validator.data
+        box_id = params.pop('box_id')
+        # 检查是否存在
+        box = BoxList(box_id)
+        box.load()
+        if not box.data:
+            return error(errcode=RESP_CODE.DATAERR)
+        ret = box.update(params)
+        log.debug('BoxViewHandler|post|update ret=%s', ret)
+        return success(data={})
 
 
