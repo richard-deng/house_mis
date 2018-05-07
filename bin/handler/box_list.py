@@ -39,6 +39,7 @@ class BoxListHandler(BaseHandler):
                 item['id'] = str(item['id'])
                 icon_name = item['icon']
                 item['icon'] = BASE_URL + icon_name
+                item['icon_name'] = icon_name
                 base_tools.trans_time(item, BoxList.DATETIME_KEY)
         data['info'] = info
         return success(data=data)
@@ -82,5 +83,26 @@ class BoxCreateHandler(BaseHandler):
         if ret != 1:
             return error(errcode=RESP_CODE.DATAERR)
         return success(data={})
+
+
+class BoxViewHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('box_id', T_INT, False)
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        params = self.validator.data
+        box_id = params.get('box_id')
+        box = BoxList(box_id)
+        box.load()
+        data = box.data
+        icon_name = data['icon']
+        data['icon'] = BASE_URL + icon_name
+        data['icon_name'] = icon_name
+        log.debug('BoxViewHandler|get|data=%s', data)
+        return success(data=data)
 
 

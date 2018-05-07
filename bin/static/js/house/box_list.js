@@ -151,19 +151,19 @@ $(document).ready(function(){
         $('#boxList').DataTable().draw();
     });
 
-    /*
+
     $(document).on('click', '.viewEdit', function(){
         $("label.error").remove();
         var se_userid = window.localStorage.getItem('myid');
-        var userid = $(this).data('userid');
-        $('#view_user_id').text(userid);
+        var box_id = $(this).data('box_id');
+        $('#view_box_id').text(box_id);
 
         var get_data = {};
         get_data.se_userid = se_userid;
-        get_data.merchant_id = userid;
-        $('#userViewForm').resetForm();
+        get_data.box_id = box_id;
+        $('#boxViewForm').resetForm();
         $.ajax({
-	        url: '/house/v1/api/merchant/view',
+	        url: '/house/v1/api/box/view',
 	        type: 'GET',
 	        dataType: 'json',
 	        data: get_data,
@@ -177,19 +177,14 @@ $(document).ready(function(){
                     return false;
                 }
                 else {
-                    user_data = data.data;
+                    box_data = data.data;
 
-                    $('#mobile').val(user_data.mobile);
-                    $('#email').val(user_data.email);
-                    $('#name').val(user_data.name);
-                    $('#idnumber').val(user_data.idnumber);
-                    $('#province').val(user_data.province);
-                    $('#city').val(user_data.city);
-                    $('#bankname').val(user_data.bankname);
-                    $('#bankuser').val(user_data.bankuser);
-                    $('#bankaccount').val(user_data.bankaccount);
-
-                    $('#userViewModal').modal();
+                    $('#box_name_view').val(box_data.name);
+                    $('#box_available_view').val(box_data.available);
+                    $('#box_priority_view').val(box_data.priority);
+                    $("#box_icon_url_view").attr('src', box_data.icon).show();
+                    $('#box_icon_name_view').text(box_data.icon_name);
+                    $('#boxViewModal').modal();
                 }
 	        },
 	        error: function(data) {
@@ -199,6 +194,7 @@ $(document).ready(function(){
 
     });
 
+    /*
     $('#userViewSubmit').click(function(){
         var user_edit_vt = $('#userViewForm').validate({
             rules: {
@@ -435,7 +431,6 @@ $(document).ready(function(){
 });
 
 function upload_file(obj) {
-    console.log("hello file upload");
     var se_userid = window.localStorage.getItem('myid');
     var formData = new FormData();
     var name = $("#iconCreateUpload").val();
@@ -458,6 +453,37 @@ function upload_file(obj) {
             name = detail_data.icon_name;
             $("#box_icon_url_add").attr('src', src).show();
             $("#box_icon_name_add").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+
+function upload_view_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#iconViewUpload").val();
+    formData.append("file", $("#iconViewUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/house/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#box_icon_url_view").attr('src', src).show();
+            $("#box_icon_name_view").text(name);
         },
         error: function (response) {
             console.log(response);

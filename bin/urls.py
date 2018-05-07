@@ -16,6 +16,7 @@ urls = (
     # 九宫格
     ('^/house/v1/api/box/list$', box_list.BoxListHandler),
     ('^/house/v1/api/box/create$', box_list.BoxCreateHandler),
+    ('^/house/v1/api/box/view$', box_list.BoxViewHandler),
     ('^/house/v1/api/icon/upload$', box_list.UploadIconHandler),
 
 

@@ -62,92 +62,6 @@
     </div>
 </div>
 
-<!--
-<div class="modal fade" tabindex="-1" role="dialog" id="userViewModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">查看</h4><span hidden id="view_user_id"></span>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal" id="userViewForm" role="form">
-
-                    <div class="form-group">
-                        <label for="mobile" class="col-sm-2 control-label">手机号</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="mobile" name="mobile" placeholder="必填">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email" class="col-sm-2 control-label">邮箱</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="email" name="email" placeholder="必填">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">用户名称</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="必填">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="idnumber" class="col-sm-2 control-label">身份证号</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="idnumber" name="idnumber" placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="province" class="col-sm-2 control-label">省份</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="province" name="province" placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="city" class="col-sm-2 control-label">城市</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="city" name="city"  placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="bankname" class="col-sm-2 control-label">开户行名称</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="bankname" name="bankname"  placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="bankuser" class="col-sm-2 control-label">持卡人</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="bankuser" name="bankuser"  placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="bankaccount" class="col-sm-2 control-label">银行账号</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="bankaccount" name="bankaccout"  placeholder="">
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="userViewSubmit">提交</button>
-            </div>
-        </div>
-    </div>
-</div>
-
--->
-
 <div class="modal fade" tabindex="-1" role="dialog" id="boxCreateModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -192,7 +106,7 @@
                         </div>
                         <div class="p_img_l">
                             <div id="preview">
-                                <img id="box_icon_url_add"  src="" width=""/>
+                                <img id="box_icon_url_add"  src="" width="80px" height="40px"/>
                                 <span id="box_icon_name_add" hidden></span>
                             </div>
                         </div>
@@ -208,6 +122,65 @@
     </div>
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="boxViewModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">查看</h4><span id="view_box_id" hidden></span>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="boxViewForm" role="form">
+
+                    <div class="form-group">
+                        <label for="box_name_view" class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="box_name_view" name="box_name_view" placeholder="必填">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="box_priority_view" class="col-sm-2 control-label">优先级</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="box_priority_view" name="box_priority_view" placeholder="必填">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="box_available_view" class="col-sm-2 control-label">是否启用</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="box_available_view" name="box_available_view">
+                                <option value="0">关闭</option>
+                                <option value="1">打开</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="box_icon_url_view" class="col-sm-2 control-label">图标链接</label>
+                        <div class="col-sm-2">
+                            <input type="file" id="iconViewUpload" onchange="upload_view_file(this)">
+                        </div>
+                        <div class="col-sm-3">
+
+                        </div>
+                        <div class="p_img_l">
+                            <div id="preview_view">
+                                <img id="box_icon_url_view"  src="" width="80px" height="40px"/>
+                                <span id="box_icon_name_view" hidden></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="boxViewSubmit">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </%block>
 
