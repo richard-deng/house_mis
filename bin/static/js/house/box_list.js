@@ -49,7 +49,7 @@ $(document).ready(function(){
             }
             
             $.ajax({
-                url: '/house/v1/api/box/list',
+                url: '/mis/v1/api/box/list',
                 type: 'GET',
                 dataType: 'json',
                 data: get_data,
@@ -180,7 +180,7 @@ $(document).ready(function(){
         get_data.box_id = box_id;
         $('#boxViewForm').resetForm();
         $.ajax({
-	        url: '/house/v1/api/box/view',
+	        url: '/mis/v1/api/box/view',
 	        type: 'GET',
 	        dataType: 'json',
 	        data: get_data,
@@ -266,7 +266,7 @@ $(document).ready(function(){
         post_data.box_id = $("#view_box_id").text();
 
         $.ajax({
-	        url: '/house/v1/api/box/view',
+	        url: '/mis/v1/api/box/view',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,
@@ -354,7 +354,7 @@ $(document).ready(function(){
         post_data.icon = $("#box_icon_name_add").text();
 
         $.ajax({
-	        url: '/house/v1/api/box/create',
+	        url: '/mis/v1/api/box/create',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,
@@ -392,7 +392,7 @@ function upload_file(obj) {
     formData.append("name", name);
     formData.append("se_userid", se_userid);
     $.ajax({
-        url: "/house/v1/api/icon/upload",
+        url: "/mis/v1/api/icon/upload",
         type: "POST",
         data: formData,
         processData: false,
@@ -423,7 +423,7 @@ function upload_view_file(obj) {
     formData.append("name", name);
     formData.append("se_userid", se_userid);
     $.ajax({
-        url: "/house/v1/api/icon/upload",
+        url: "/mis/v1/api/icon/upload",
         type: "POST",
         data: formData,
         processData: false,

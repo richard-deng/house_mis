@@ -12,7 +12,7 @@ log = logging.getLogger()
 
 class Root(core.Handler):
     def GET(self):
-        self.redirect('/house/v1/page/login.html')
+        self.redirect('/mis/v1/page/login.html')
 
 
 class Login(core.Handler):

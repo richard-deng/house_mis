@@ -34,7 +34,7 @@ database = {
 # URLS配置
 URLS = None
 # 静态路径配置
-STATICS = {'/static/':'/static/'}
+STATICS = {'/mis/static/':'/static/'}
 # 模板配置
 TEMPLATE = {
     'cache': True,
@@ -72,8 +72,8 @@ TERMBIND_STATE = 2
 ALLOW_LOGIN_MOBILE = ['13802438716']
 #cookie 配置
 # cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'192.168.0.103', 'path':'/posp'}
-cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'127.0.0.1', 'path':'/house'}
+cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'127.0.0.1', 'path':'/mis'}
 # 上传的文件存放位置
 SAVE_PATH = '/Users/admin/Documents/develop/myproject/house/house_mis/bin/static/upload/icon/'
 # 链接前缀
-BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + '/static/upload/icon/'
+BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + '/mis/static/upload/icon/'
