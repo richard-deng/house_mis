@@ -81,6 +81,13 @@ $(document).ready(function(){
         },
         'columnDefs': [
             {
+                targets: 2,
+                render: function (data, type, full) {
+                    return '<a href=' + data + '>' + data + '</a>';
+                }
+
+            },
+            {
                 targets: 4,
                 render: function (data, type, full) {
                     if (data === 1) {
