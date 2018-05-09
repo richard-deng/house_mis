@@ -112,8 +112,16 @@ $(document).ready(function(){
                 data: '操作',
                 render: function(data, type, full) {
                     var box_id = full.id;
+                    var box_type = full.box_type;
+                    var box_type_name = '';
+                    if (box_type === 0) {
+                        box_type_name = '添加订单';
+                    } else {
+                        box_type_name = '添加文本';
+                    }
                     var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-box_id="+box_id+">"+'查看'+"</button>";
-                    return view;
+                    var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+">"+box_type_name+"</button>";
+                    return view + box;
                 }
             }
         ],
