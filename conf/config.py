@@ -11,17 +11,17 @@ LOGFILE = {
         }
     }
 }
-LOGFILE = None
+# LOGFILE = None
 
 database = {
     'house_core':{
         'engine': 'pymysql',
-        'passwd': '',
+        'passwd': '123456',
         'charset': 'utf8',
         'db': 'house_core',
         'idle_timeout': 10,
         'host': '127.0.0.1',
-        'user': 'root',
+        'user': 'qf',
         'port': 3306,
         'conn': 3
     },
@@ -72,8 +72,11 @@ TERMBIND_STATE = 2
 ALLOW_LOGIN_MOBILE = ['13802438716']
 #cookie 配置
 # cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'192.168.0.103', 'path':'/posp'}
-cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'127.0.0.1', 'path':'/mis'}
+cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'120.27.15.131', 'path':'/mis'}
 # 上传的文件存放位置
-SAVE_PATH = '/Users/admin/Documents/develop/myproject/house/house_mis/bin/static/upload/icon/'
+SAVE_PATH = '/home/qfpay/house/house_mis/bin/static/upload/icon/'
+# 
+TAIL_PATH = '/mis/static/upload/icon/'
 # 链接前缀
-BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + '/mis/static/upload/icon/'
+# BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + TAIL_PATH
+BASE_URL = 'http://' + cookie_conf.get('domain') + TAIL_PATH
