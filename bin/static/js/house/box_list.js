@@ -403,6 +403,19 @@ $(document).ready(function(){
 
     });
 
+    $(document).on('click', '.addBox', function(){
+        var box_id = $(this).data('box_id');
+        var box_type = $(this).data('box_type');
+        console.log('box_id=', box_id, 'box_type=', box_type);
+        $("label.error").remove();
+        if (box_type === 0) {
+            // 订单
+            $('#orderCreateModal').modal();
+        } else {
+            // 文本
+            $('#textCreateModal').modal();
+        }
+    });
 
 });
 
