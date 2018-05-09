@@ -81,6 +81,16 @@ $(document).ready(function(){
         },
         'columnDefs': [
             {
+                targets: 2,
+                render: function (data, type, full) {
+                    if (data === 0) {
+                        return '订单';
+                    } else {
+                        return '文本';
+                    }
+                }
+            },
+            {
                 targets: 3,
                 render: function (data, type, full) {
                     return '<a href=' + data + '>' + data + '</a>';
