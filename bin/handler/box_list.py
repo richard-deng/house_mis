@@ -69,6 +69,7 @@ class BoxCreateHandler(BaseHandler):
 
     _post_handler_fields = [
         Field('name', T_STR, False),
+        Field('box_type', T_INT, False),
         Field('available', T_INT, False),
         Field('priority', T_INT, False),
         Field('icon', T_STR, False),
@@ -95,6 +96,7 @@ class BoxViewHandler(BaseHandler):
     _post_handler_fields = [
         Field('box_id', T_INT, False),
         Field('name', T_STR, False),
+        Field('box_type', T_STR, False),
         Field('available', T_INT, False),
         Field('priority', T_INT, False),
         Field('icon', T_STR, False),

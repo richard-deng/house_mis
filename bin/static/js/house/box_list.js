@@ -81,14 +81,14 @@ $(document).ready(function(){
         },
         'columnDefs': [
             {
-                targets: 2,
+                targets: 3,
                 render: function (data, type, full) {
                     return '<a href=' + data + '>' + data + '</a>';
                 }
 
             },
             {
-                targets: 4,
+                targets: 5,
                 render: function (data, type, full) {
                     if (data === 1) {
                         return '启用'
@@ -98,7 +98,7 @@ $(document).ready(function(){
                 }
             },
             {
-                targets: 7,
+                targets: 8,
                 data: '操作',
                 render: function(data, type, full) {
                     var box_id = full.id;
@@ -110,6 +110,7 @@ $(document).ready(function(){
         'columns': [
             { data: 'id'},
             { data: 'name'},
+            { data: 'box_type'},
             { data: 'icon'},
             { data: 'priority'},
             { data: 'available'},
@@ -197,6 +198,7 @@ $(document).ready(function(){
                     box_data = data.data;
 
                     $('#box_name_view').val(box_data.name);
+                    $('#box_type_view').val(box_data.box_type);
                     $('#box_available_view').val(box_data.available);
                     $('#box_priority_view').val(box_data.priority);
                     $("#box_icon_url_view").attr('src', box_data.icon).show();
@@ -260,6 +262,7 @@ $(document).ready(function(){
         var post_data = {};
         post_data.se_userid = se_userid;
         post_data.name = $('#box_name_view').val();
+        post_data.box_type = $('#box_type_view').val();
         post_data.priority = $('#box_priority_view').val();
         post_data.available = $('#box_available_view').val();
         post_data.icon = $("#box_icon_name_view").text();
@@ -349,6 +352,7 @@ $(document).ready(function(){
         var post_data = {};
         post_data.se_userid = se_userid;
         post_data.name = $('#box_name_add').val();
+        post_data.box_type = $('#box_type_add').val();
         post_data.priority = $('#box_priority_add').val();
         post_data.available = $('#box_available_add').val();
         post_data.icon = $("#box_icon_name_add").text();

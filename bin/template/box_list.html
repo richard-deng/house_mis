@@ -45,6 +45,7 @@
                         <tr>
                             <th>id</th>
                             <th>名称</th>
+                            <th>类型</th>
                             <th>图标链接</th>
                             <th>优先级</th>
                             <th>是否可用</th>
@@ -76,6 +77,16 @@
                         <label for="box_name_add" class="col-sm-2 control-label">名称</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="box_name_add" name="box_name_add" placeholder="必填">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="box_type_add" class="col-sm-2 control-label">类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="box_type_add" name="box_type_add">
+                                <option value="0">订单</option>
+                                <option value="1">文本</option>
+                            </select>
                         </div>
                     </div>
 
@@ -150,6 +161,16 @@
                         <label for="box_name_view" class="col-sm-2 control-label">名称</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="box_name_view" name="box_name_view" placeholder="必填">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="box_type_view" class="col-sm-2 control-label">类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="box_type_view" name="box_type_view">
+                                <option value="0">订单</option>
+                                <option value="1">文本</option>
+                            </select>
                         </div>
                     </div>
 
