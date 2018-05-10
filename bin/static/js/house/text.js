@@ -125,4 +125,47 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('click', '.viewEdit', function(){
+        $("label.error").remove();
+        var se_userid = window.localStorage.getItem('myid');
+        var text_id = $(this).data('text_id');
+        $('#text_view').text(text_id);
+
+        var get_data = {};
+        get_data.se_userid = se_userid;
+        get_data.text_id = text_id;
+
+        $('#textViewForm').resetForm();
+
+        $.ajax({
+            url: '/mis/v1/api/text/view',
+            type: 'GET',
+            dataType: 'json',
+            data: get_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    text_data = data.data;
+
+                    $('#text_name_view').val(text_data.name);
+                    $('#text_content_view').val(text_data.content);
+                    $('#text_available_view').val(text_data.available);
+                    $("#text_icon_url_view").attr('src', text_data.icon).show();
+                    $('#text_icon_name_view').text(text_data.icon_name);
+                    $('#textViewModal').modal();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
+    });
 });

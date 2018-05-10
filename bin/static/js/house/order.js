@@ -114,4 +114,47 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('click', '.viewEdit', function(){
+        $("label.error").remove();
+        var se_userid = window.localStorage.getItem('myid');
+        var order_id = $(this).data('order_id');
+        $('#order_view').text(order_id);
+
+        var get_data = {};
+        get_data.se_userid = se_userid;
+        get_data.order_id = order_id;
+
+        $('#orderViewForm').resetForm();
+
+        $.ajax({
+            url: '/mis/v1/api/order/view',
+            type: 'GET',
+            dataType: 'json',
+            data: get_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    text_data = data.data;
+
+                    $('#goods_name_view').val(text_data.goods_name);
+                    $('#goods_price_view').val(text_data.goods_price);
+                    $('#goods_desc_view').val(text_data.goods_desc);
+                    $("#goods_picture_url_view").attr('src', text_data.goods_picture).show();
+                    $('#goods_picture_name_view').text(text_data.goods_picture_name);
+                    $('#orderViewModal').modal();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    });
+
 });

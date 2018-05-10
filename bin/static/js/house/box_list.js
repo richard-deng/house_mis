@@ -212,14 +212,14 @@ $(document).ready(function(){
                     return false;
                 }
                 else {
-                    box_data = data.data;
+                    text_data = data.data;
 
-                    $('#box_name_view').val(box_data.name);
-                    $('#box_type_view').val(box_data.box_type);
-                    $('#box_available_view').val(box_data.available);
-                    $('#box_priority_view').val(box_data.priority);
-                    $("#box_icon_url_view").attr('src', box_data.icon).show();
-                    $('#box_icon_name_view').text(box_data.icon_name);
+                    $('#box_name_view').val(text_data.name);
+                    $('#box_type_view').val(text_data.box_type);
+                    $('#box_available_view').val(text_data.available);
+                    $('#box_priority_view').val(text_data.priority);
+                    $("#box_icon_url_view").attr('src', text_data.icon).show();
+                    $('#box_icon_name_view').text(text_data.icon_name);
                     $('#boxViewModal').modal();
                 }
 	        },
