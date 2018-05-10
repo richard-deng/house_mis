@@ -238,6 +238,7 @@ $(document).ready(function () {
                     toastr.success('修改');
                     $("#textViewForm").resetForm();
                     $("#textViewModal").modal('hide');
+                    $('#textList').DataTable().draw();
                 }
             },
             error: function(data) {
@@ -246,3 +247,33 @@ $(document).ready(function () {
         });
     });
 });
+
+function upload_text_icon_view(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#textIconViewUpload").val();
+    formData.append("file", $("#textIconViewUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#text_icon_url_view").attr('src', src).show();
+            $("#text_icon_name_view").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
