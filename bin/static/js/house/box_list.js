@@ -483,6 +483,31 @@ $(document).ready(function(){
         post_data.goods_desc = $('#goods_desc_add').val();
         post_data.goods_picture = $('#goods_picture_name_add').val();
 
+        $.ajax({
+            url: '/mis/v1/api/order/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('添加成功');
+                    $("#orderCreateForm").resetForm();
+                    $("#orderCreateModal").modal('hide');
+                    // 切换到order列表页面
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
 
     });
 
@@ -496,7 +521,7 @@ $(document).ready(function(){
                 text_content_add: {
                     required: true,
                     maxlength: 500
-                },
+                }
             },
             messages: {
 
@@ -536,6 +561,33 @@ $(document).ready(function(){
         post_data.content = $('#text_content_add').val();
         post_data.available = $('#text_available_add').val();
         post_data.icon = $('#text_icon_name_add').val();
+
+        $.ajax({
+            url: '/mis/v1/api/text/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('添加成功');
+                    $("#textCreateForm").resetForm();
+                    $("#textCreateModal").modal('hide');
+                    // 切换到text列表页面
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
 
     });
 
@@ -595,6 +647,67 @@ function upload_view_file(obj) {
             name = detail_data.icon_name;
             $("#box_icon_url_view").attr('src', src).show();
             $("#box_icon_name_view").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+
+function upload_goods_picture_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#goodsPictureCreateUpload").val();
+    formData.append("file", $("#goodsPictureCreateUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#goods_picture_url_add").attr('src', src).show();
+            $("#goods_picture_name_add").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function upload_text_icon_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#textIconCreateUpload").val();
+    formData.append("file", $("#textIconCreateUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#text_icon_url_add").attr('src', src).show();
+            $("#text_icon_name_add").text(name);
         },
         error: function (response) {
             console.log(response);
