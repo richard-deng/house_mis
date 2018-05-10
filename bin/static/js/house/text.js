@@ -168,4 +168,81 @@ $(document).ready(function () {
         });
 
     });
+
+    $('#textViewSubmit').click(function () {
+        var text_view_vt = $('#textViewForm').validate({
+            rules: {
+                text_name_view: {
+                    required: true,
+                    maxlength: 32
+                },
+                text_content_view: {
+                    required: true,
+                    maxlength: 500
+                }
+            },
+            messages: {
+
+                text_name_view: {
+                    required: '请输入名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                text_content_view: {
+                    required: '请输入内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = text_view_vt.form();
+        if(!ok){
+            return false;
+        }
+        icon_src = $("#text_icon_url_view")[0].src;
+        if(icon_src === "") {
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.text_id = $('#text_view').text();
+        post_data.name = $("#text_name_view").val();
+        post_data.content = $('#text_content_view').val();
+        post_data.available = $('#text_available_view').val();
+        post_data.icon = $('#text_icon_name_view').text();
+
+        $.ajax({
+            url: '/mis/v1/api/text/view',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('修改');
+                    $("#textViewForm").resetForm();
+                    $("#textViewModal").modal('hide');
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    });
 });

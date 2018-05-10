@@ -157,4 +157,91 @@ $(document).ready(function () {
         });
     });
 
+    $('#orderViewSubmit').click(function(){
+        var order_view_vt = $('#orderViewForm').validate({
+            rules: {
+                goods_name_view: {
+                    required: true,
+                    maxlength: 32
+                },
+                goods_price_view: {
+                    required: false,
+                    maxlength: 20,
+                    digits: true
+                },
+                goods_desc_view: {
+                    required: true,
+                    maxlength: 1024
+                }
+            },
+            messages: {
+
+                goods_name_view: {
+                    required: '请输入商品名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                goods_price_view: {
+                    required: '请输入商品价格',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串"),
+                    digits: '必须输入整数'
+                },
+                goods_desc_view: {
+                    required: '请输入商品名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = order_view_vt.form();
+        if(!ok){
+            return false;
+        }
+        picture_src = $("#goods_picture_url_view")[0].src;
+        if(picture_src === "") {
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.order_id = $('#order_view').text();
+        post_data.goods_name = $("#goods_name_view").val();
+        post_data.goods_price = $('#goods_price_view').val();
+        post_data.goods_desc = $('#goods_desc_view').val();
+        post_data.goods_picture = $('#goods_picture_name_view').text();
+
+        $.ajax({
+            url: '/mis/v1/api/order/view',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('修改成功');
+                    $("#orderViewForm").resetForm();
+                    $("#orderViewModal").modal('hide');
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    });
+
 });
