@@ -67,6 +67,7 @@ class OrderListHandler(BaseHandler):
         if info:
             for item in info:
                 item['id'] = str(item['id'])
+                item['box_id'] = str(item['box_id'])
                 goods_picture = item['goods_picture']
                 item['goods_picture'] = BASE_URL + goods_picture
                 item['goods_picture_name'] = goods_picture

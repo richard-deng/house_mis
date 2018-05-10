@@ -72,6 +72,7 @@ class TextInfoListHandler(BaseHandler):
             for item in info:
                 text_id = item['id']
                 item['id'] = str(item['id'])
+                item['box_id'] = str(item['box_id'])
                 icon_name = item['icon']
                 item['icon'] = BASE_URL + icon_name
                 item['icon_name'] = icon_name
