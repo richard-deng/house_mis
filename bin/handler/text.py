@@ -6,6 +6,7 @@ from runtime import g_rt
 from house_base.base_handler import BaseHandler
 from house_base.box_list import BoxList
 from house_base.text_info import TextInfo
+from house_base.text_info import TextDetail
 from house_base.response import success, error, RESP_CODE
 from house_base.session import house_check_session
 
@@ -20,6 +21,7 @@ class TextInfoCreateHandler(BaseHandler):
     _post_handler_fields = [
         Field('box_id', T_INT, False),
         Field('name', T_STR, False),
+        Field('content', T_STR, True),
         Field('icon', T_STR, False),
         Field('available', T_INT, False),
     ]
@@ -28,14 +30,21 @@ class TextInfoCreateHandler(BaseHandler):
     @with_validator_self
     def _post_handler(self):
         params = self.validator.data
+        content = params.pop('content')
         box_id = params.get('box_id')
         box = BoxList(box_id)
         box.load()
         if not box.data:
             return error(errcode=RESP_CODE.DATAERR)
         # 检查名称
-        ret = TextInfo.create(params)
-        log.debug('class=TextInfoCreateHandler|create ret=%s', ret)
+        ret, text_id = TextInfo.create(params)
+        log.debug('class=TextInfoCreateHandler|create text info ret=%s', ret)
         if ret != 1:
             return error(errcode=RESP_CODE.DATAERR)
+        detail_values = {
+            'content': content,
+            'text_id': text_id
+        }
+        ret = TextDetail.create(detail_values)
+        log.debug('class=TextInfoCreateHandler|create text detail ret=%s', ret)
         return success(data={})
