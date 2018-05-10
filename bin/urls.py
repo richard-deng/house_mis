@@ -34,5 +34,7 @@ urls = (
     ('^/$', page.Root),
     ('^/mis/v1/page/login.html$', page.Login),
     ('^/mis/v1/page/box_list.html$', page.BoxList),
+    ('^/mis/v1/page/order_list.html$', page.OrderList),
+    ('^/mis/v1/page/text_list.html$', page.TextList),
 
 )
