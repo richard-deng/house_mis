@@ -74,3 +74,49 @@ class OrderListHandler(BaseHandler):
                 base_tools.trans_time(item, BoxList.DATETIME_KEY)
         data['info'] = info
         return success(data=data)
+
+
+class OrderViewHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('order_id', T_INT, False),
+    ]
+
+    _post_handler_fields = [
+        Field('order_id', T_INT, False),
+        Field('goods_name', T_STR, False),
+        Field('goods_price', T_INT, False),
+        Field('goods_desc', T_STR, False),
+        Field('goods_picture', T_STR, False),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        params = self.validator.data
+        order_id = params.get('order_id')
+        order = Order(order_id)
+        order.load()
+        data = order.data
+        goods_picture_name = data['goods_picture']
+        data['goods_picture'] = BASE_URL + goods_picture_name
+        data['goods_picture_name'] = goods_picture_name
+        log.debug('OrderViewHandler|get|data=%s', data)
+        return success(data=data)
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _post_handler(self):
+        params = self.validator.data
+        order_id = params.pop('order_id')
+        order = Order(order_id)
+        order.load()
+        if not order.data:
+            return error(errcode=RESP_CODE.DATAERR)
+        # 检查名称
+        ret = order.update(params)
+        log.debug('OrderViewHandler|post|update ret=%s', ret)
+        if ret != 1:
+            return error(errcode=RESP_CODE.DATAERR)
+        return success(data={})
+

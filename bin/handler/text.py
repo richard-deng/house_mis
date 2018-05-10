@@ -81,3 +81,60 @@ class TextInfoListHandler(BaseHandler):
                 item['content'] = detail.data.get('content') if detail.data else ''
         data['info'] = info
         return success(data=data)
+
+
+class TextInfoViewHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('text_id', T_INT, False),
+    ]
+
+    _post_handler_fields = [
+        Field('text_id', T_INT, False),
+        Field('name', T_STR, False),
+        Field('content', T_STR, True),
+        Field('icon', T_STR, False),
+        Field('available', T_INT, False),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        params = self.validator.data
+        text_id = params.get('text_id')
+
+        text = TextInfo(text_id)
+        text.load()
+        if not text.data:
+            return error(errcode=RESP_CODE.DATAERR)
+        detail = TextDetail.load_by_text_id(text_id)
+        text.data['content'] = detail.data.get('content') if detail.data else ''
+        data = text.data
+        icon_name = data['icon']
+        data['icon'] = BASE_URL + icon_name
+        data['icon_name'] = icon_name
+        return success(data=data)
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _post_handler(self):
+        params = self.validator.data
+        content = params.pop('content')
+        text_id = params.pop('text_id')
+        text = TextInfo(text_id)
+        text.load()
+        if not text.data:
+            return error(errcode=RESP_CODE.DATAERR)
+        ret = text.update(params)
+        log.debug('TextInfoViewHandler|post update info ret=%s', ret)
+        if ret != 1:
+            return error(errcode=RESP_CODE.DATAERR)
+        detail = TextDetail.load_by_text_id(text_id)
+        detail_id = detail.data.get('id')
+        detail_values = {
+            'content': content
+        }
+        d = TextDetail(detail_id)
+        ret = d.update(detail_values)
+        log.debug('TextInfoViewHandler|post update detail ret=%s', ret)
+        return success(data={})

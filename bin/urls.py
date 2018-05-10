@@ -23,12 +23,13 @@ urls = (
 
     # 订单
     ('^/mis/v1/api/order/list$', order.OrderListHandler),
+    ('^/mis/v1/api/order/view$', order.OrderViewHandler),
     ('^/mis/v1/api/order/create$', order.OrderCreateHandler),
 
     # 文本
     ('^/mis/v1/api/text/list$', text.TextInfoListHandler),
+    ('^/mis/v1/api/text/view$', text.TextInfoViewHandler),
     ('^/mis/v1/api/text/create$', text.TextInfoCreateHandler),
-
 
     # 页面
     ('^/$', page.Root),
