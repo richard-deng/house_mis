@@ -246,6 +246,35 @@ $(document).ready(function () {
             }
         });
     });
+
+    $("#text_search").click(function(){
+
+        var text_query_vt = $('#text_list_query').validate({
+            rules: {
+                text_name: {
+                    required: false,
+                    maxlength: 32
+                }
+            },
+            messages: {
+                text_name: {
+                    required: '请输入名称'
+                }
+            },
+            errorPlacement: function(error, element){
+                var $error_element = element.parent().parent().next();
+                $error_element.text('');
+                error.appendTo($error_element);
+            }
+        });
+        var ok = text_query_vt.form();
+        if(!ok){
+            $("#query_label_error").show();
+            $("#query_label_error").fadeOut(1400);
+            return false;
+        }
+        $('#textList').DataTable().draw();
+    });
 });
 
 function upload_text_icon_view(obj) {

@@ -151,24 +151,16 @@ $(document).ready(function(){
 
     $("#box_search").click(function(){
 
-        var user_query_vt = $('#users_query').validate({
+        var box_query_vt = $('#box_list_query').validate({
             rules: {
-                s_merchant_id: {
-                    required: false
-                },
-                s_mobile: {
+                box_name: {
                     required: false,
-                    // maxlength: 11
-                    isMobile: '#s_mobile'
+                    maxlength: 32
                 }
             },
             messages: {
-                s_merchant_id: {
-                    required: '请输入商户ID'
-                },
-                s_mobile: {
-                    required: '请输入手机号'
-                    // maxlength: $.validator.format("请输入一个长度最多是 {0} 的字符串")
+                box_name: {
+                    required: '请输入名称'
                 }
             },
             errorPlacement: function(error, element){
@@ -177,7 +169,7 @@ $(document).ready(function(){
                 error.appendTo($error_element);
             }
         });
-        var ok = user_query_vt.form();
+        var ok = box_query_vt.form();
         if(!ok){
             $("#query_label_error").show();
             $("#query_label_error").fadeOut(1400);

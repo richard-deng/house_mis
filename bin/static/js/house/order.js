@@ -245,6 +245,35 @@ $(document).ready(function () {
         });
     });
 
+    $("#order_search").click(function(){
+
+        var order_query_vt = $('#order_list_query').validate({
+            rules: {
+                goods_name: {
+                    required: false,
+                    maxlength: 32
+                }
+            },
+            messages: {
+                goods_name: {
+                    required: '请输入商品名称'
+                }
+            },
+            errorPlacement: function(error, element){
+                var $error_element = element.parent().parent().next();
+                $error_element.text('');
+                error.appendTo($error_element);
+            }
+        });
+        var ok = order_query_vt.form();
+        if(!ok){
+            $("#query_label_error").show();
+            $("#query_label_error").fadeOut(1400);
+            return false;
+        }
+        $('#orderList').DataTable().draw();
+    });
+
 });
 
 function upload_goods_picture_view(obj) {
