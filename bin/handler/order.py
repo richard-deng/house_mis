@@ -2,7 +2,9 @@
 import logging
 
 from config import cookie_conf
+from config import BASE_URL
 from runtime import g_rt
+from house_base import tools as base_tools
 from house_base.base_handler import BaseHandler
 from house_base.box_list import BoxList
 from house_base.order import Order
@@ -45,3 +47,29 @@ class OrderCreateHandler(BaseHandler):
         if ret != 1:
             return error(errcode=RESP_CODE.DATAERR)
         return success(data={})
+
+
+class OrderListHandler(BaseHandler):
+    _get_handler_fields = [
+        Field('page', T_INT, False),
+        Field('maxnum', T_INT, False),
+        Field('goods_name', T_STR, True),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        data = {}
+
+        params = self.validator.data
+        info, num = Order.page(params)
+        data['num'] = num
+        if info:
+            for item in info:
+                item['id'] = str(item['id'])
+                goods_picture = item['goods_picture']
+                item['goods_picture'] = BASE_URL + goods_picture
+                item['goods_picture_name'] = goods_picture
+                base_tools.trans_time(item, BoxList.DATETIME_KEY)
+        data['info'] = info
+        return success(data=data)

@@ -22,9 +22,11 @@ urls = (
     ('^/mis/v1/api/icon/upload$', box_list.UploadIconHandler),
 
     # 订单
+    ('^/mis/v1/api/order/list$', order.OrderListHandler),
     ('^/mis/v1/api/order/create$', order.OrderCreateHandler),
 
     # 文本
+    ('^/mis/v1/api/text/list$', text.TextInfoListHandler),
     ('^/mis/v1/api/text/create$', text.TextInfoCreateHandler),
 
 

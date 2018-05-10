@@ -2,7 +2,9 @@
 import logging
 
 from config import cookie_conf
+from config import BASE_URL
 from runtime import g_rt
+from house_base import tools as base_tools
 from house_base.base_handler import BaseHandler
 from house_base.box_list import BoxList
 from house_base.text_info import TextInfo
@@ -48,3 +50,33 @@ class TextInfoCreateHandler(BaseHandler):
         ret = TextDetail.create(detail_values)
         log.debug('class=TextInfoCreateHandler|create text detail ret=%s', ret)
         return success(data={})
+
+
+class TextInfoListHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('page', T_INT, False),
+        Field('maxnum', T_INT, False),
+        Field('name', T_STR, True),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        data = {}
+        params = self.validator.data
+
+        info, num = TextInfo.page(params)
+        data['num'] = num
+        if info:
+            for item in info:
+                text_id = item['id']
+                item['id'] = str(item['id'])
+                icon_name = item['icon']
+                item['icon'] = BASE_URL + icon_name
+                item['icon_name'] = icon_name
+                base_tools.trans_time(item, BoxList.DATETIME_KEY)
+                detail = TextDetail.load_by_text_id(text_id)
+                item['content'] = detail.data.get('content') if detail.data else ''
+        data['info'] = info
+        return success(data=data)
