@@ -81,7 +81,7 @@ $(document).ready(function(){
         },
         'columnDefs': [
             {
-                targets: 2,
+                targets: 1,
                 render: function (data, type, full) {
                     if (data === 0) {
                         return '订单';
@@ -91,14 +91,14 @@ $(document).ready(function(){
                 }
             },
             {
-                targets: 3,
+                targets: 2,
                 render: function (data, type, full) {
                     return '<a href=' + data + '>' + data + '</a>';
                 }
 
             },
             {
-                targets: 5,
+                targets: 4,
                 render: function (data, type, full) {
                     if (data === 1) {
                         return '启用'
@@ -108,7 +108,7 @@ $(document).ready(function(){
                 }
             },
             {
-                targets: 8,
+                targets: 7,
                 data: '操作',
                 render: function(data, type, full) {
                     var box_id = full.id;
@@ -126,7 +126,6 @@ $(document).ready(function(){
             }
         ],
         'columns': [
-            { data: 'id'},
             { data: 'name'},
             { data: 'box_type'},
             { data: 'icon'},
