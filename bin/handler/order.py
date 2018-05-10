@@ -62,7 +62,7 @@ class OrderListHandler(BaseHandler):
         data = {}
 
         params = self.validator.data
-        info, num = Order.page(params)
+        info, num = Order.page(**params)
         data['num'] = num
         if info:
             for item in info:

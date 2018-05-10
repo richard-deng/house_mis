@@ -66,7 +66,7 @@ class TextInfoListHandler(BaseHandler):
         data = {}
         params = self.validator.data
 
-        info, num = TextInfo.page(params)
+        info, num = TextInfo.page(**params)
         data['num'] = num
         if info:
             for item in info:
