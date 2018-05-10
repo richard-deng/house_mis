@@ -407,14 +407,136 @@ $(document).ready(function(){
         var box_id = $(this).data('box_id');
         var box_type = $(this).data('box_type');
         console.log('box_id=', box_id, 'box_type=', box_type);
-        $("label.error").remove();
         if (box_type === 0) {
             // 订单
+            $('#orderCreateForm').resetForm();
+            $("label.error").remove();
+            $('#order_add').text(box_id);
             $('#orderCreateModal').modal();
         } else {
             // 文本
+            $('#textCreateForm').resetForm();
+            $("label.error").remove();
+            $('#text_add').text(box_id);
             $('#textCreateModal').modal();
         }
+    });
+
+    $('#orderCreateSubmit').click(function () {
+        var order_create_vt = $('#orderCreateForm').validate({
+            rules: {
+                goods_name_add: {
+                    required: true,
+                    maxlength: 32
+                },
+                goods_price_add: {
+                    required: false,
+                    maxlength: 20,
+                    digits: true
+                },
+                goods_desc_add: {
+                    required: true,
+                    maxlength: 1024
+                }
+            },
+            messages: {
+
+                goods_name_add: {
+                    required: '请输入商品名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                goods_price_add: {
+                    required: '请输入商品价格',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串"),
+                    digits: '必须输入整数'
+                },
+                goods_desc_add: {
+                    required: '请输入商品名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = order_create_vt.form();
+        if(!ok){
+            return false;
+        }
+        picture_src = $("#goods_picture_url_add")[0].src;
+        if(picture_src === "") {
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.box_id = $('#order_add').text();
+        post_data.goods_name = $("#goods_name_add").val();
+        post_data.goods_price = $('#goods_price_add').val();
+        post_data.goods_desc = $('#goods_desc_add').val();
+        post_data.goods_picture = $('#goods_picture_name_add').val();
+
+
+    });
+
+    $('#textCreateSubmit').click(function () {
+        var text_create_vt = $('#textCreateForm').validate({
+            rules: {
+                text_name_add: {
+                    required: true,
+                    maxlength: 32
+                },
+                text_content_add: {
+                    required: true,
+                    maxlength: 500
+                },
+            },
+            messages: {
+
+                text_name_add: {
+                    required: '请输入名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                text_content_add: {
+                    required: '请输入内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = text_create_vt.form();
+        if(!ok){
+            return false;
+        }
+        icon_src = $("#text_icon_url_add")[0].src;
+        if(icon_src === "") {
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.box_id = $('#text_add').text();
+        post_data.name = $("#text_name_add").val();
+        post_data.content = $('#text_content_add').val();
+        post_data.available = $('#text_available_add').val();
+        post_data.icon = $('#text_icon_name_add').val();
+
     });
 
 });
