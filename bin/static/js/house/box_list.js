@@ -481,7 +481,7 @@ $(document).ready(function(){
         post_data.goods_name = $("#goods_name_add").val();
         post_data.goods_price = $('#goods_price_add').val();
         post_data.goods_desc = $('#goods_desc_add').val();
-        post_data.goods_picture = $('#goods_picture_name_add').val();
+        post_data.goods_picture = $('#goods_picture_name_add').text();
 
         $.ajax({
             url: '/mis/v1/api/order/create',
@@ -560,7 +560,7 @@ $(document).ready(function(){
         post_data.name = $("#text_name_add").val();
         post_data.content = $('#text_content_add').val();
         post_data.available = $('#text_available_add').val();
-        post_data.icon = $('#text_icon_name_add').val();
+        post_data.icon = $('#text_icon_name_add').text();
 
         $.ajax({
             url: '/mis/v1/api/text/create',

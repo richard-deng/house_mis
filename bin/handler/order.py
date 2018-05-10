@@ -36,6 +36,10 @@ class OrderCreateHandler(BaseHandler):
         if not box.data:
             return error(errcode=RESP_CODE.DATAERR)
         # 检查名称
+        # 只能创建一个先检查
+        order = Order.load_by_box_id(box_id)
+        if order.data:
+            return error(error=RESP_CODE.DATAEXIST)
         ret = Order.create(params)
         log.debug('class=OrderCreateHandler|create ret=%s', ret)
         if ret != 1:
