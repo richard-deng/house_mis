@@ -75,6 +75,13 @@ $(document).ready(function () {
         },
         'columnDefs': [
             {
+                targets: 3,
+                render: function (data, type, full) {
+                    return '<a href=' + data + '>' + data + '</a>';
+                }
+
+            },
+            {
                 targets: 6,
                 data: '操作',
                 render: function(data, type, full) {
