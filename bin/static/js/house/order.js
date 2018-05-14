@@ -75,14 +75,14 @@ $(document).ready(function () {
         },
         'columnDefs': [
             {
-                targets: 3,
+                targets: 4,
                 render: function (data, type, full) {
                     return '<a href=' + data + '>' + data + '</a>';
                 }
 
             },
             {
-                targets: 6,
+                targets: 7,
                 data: '操作',
                 render: function(data, type, full) {
                     var order_id = full.id;
@@ -92,6 +92,7 @@ $(document).ready(function () {
             }
         ],
         'columns': [
+            { data: 'box_name'},
             { data: 'goods_name'},
             { data: 'goods_price'},
             { data: 'goods_desc'},

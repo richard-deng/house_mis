@@ -76,14 +76,14 @@ $(document).ready(function () {
         },
         'columnDefs': [
             {
-                targets: 1,
+                targets: 2,
                 render: function (data, type, full) {
                     return '<a href=' + data + '>' + data + '</a>';
                 }
 
             },
             {
-                targets: 3,
+                targets: 4,
                 render: function (data, type, full) {
                     if (data === 1) {
                         return '启用'
@@ -93,7 +93,7 @@ $(document).ready(function () {
                 }
             },
             {
-                targets: 6,
+                targets: 7,
                 data: '操作',
                 render: function(data, type, full) {
                     var text_id = full.id;
@@ -103,6 +103,7 @@ $(document).ready(function () {
             }
         ],
         'columns': [
+            { data: 'box_name'},
             { data: 'name'},
             { data: 'icon'},
             { data: 'content'},
