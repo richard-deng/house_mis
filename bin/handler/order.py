@@ -65,9 +65,14 @@ class OrderListHandler(BaseHandler):
         info, num = Order.page(**params)
         data['num'] = num
         if info:
+            boxs = BoxList.load_all(where={})
+            box_name_map = {}
+            for box in boxs:
+                box_name_map[box['id']] = box['name']
             for item in info:
                 item['id'] = str(item['id'])
                 item['box_id'] = str(item['box_id'])
+                item['box_name'] = box_name_map.get(item['box_id'], '')
                 goods_picture = item['goods_picture']
                 item['goods_picture'] = BASE_URL + goods_picture
                 item['goods_picture_name'] = goods_picture

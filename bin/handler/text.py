@@ -69,10 +69,15 @@ class TextInfoListHandler(BaseHandler):
         info, num = TextInfo.page(**params)
         data['num'] = num
         if info:
+            boxs = BoxList.load_all(where={})
+            box_name_map = {}
+            for box in boxs:
+                box_name_map[box['id']] = box['name']
             for item in info:
                 text_id = item['id']
                 item['id'] = str(item['id'])
                 item['box_id'] = str(item['box_id'])
+                item['box_name'] = box_name_map.get(item['box_id'], '')
                 icon_name = item['icon']
                 item['icon'] = BASE_URL + icon_name
                 item['icon_name'] = icon_name
