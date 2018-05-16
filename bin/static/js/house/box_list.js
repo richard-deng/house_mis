@@ -403,12 +403,14 @@ $(document).ready(function(){
             // 订单
             $('#orderCreateForm').resetForm();
             $("label.error").remove();
+            $("#goods_picture_url_add").attr('src', '').hide();
             $('#order_add').text(box_id);
             $('#orderCreateModal').modal();
         } else {
             // 文本
             $('#textCreateForm').resetForm();
             $("label.error").remove();
+            $("#text_icon_url_add").attr('src', '').hide();
             $('#text_add').text(box_id);
             $('#textCreateModal').modal();
         }
