@@ -308,6 +308,7 @@ $(document).ready(function(){
 
     $('#box_create').click(function(){
         $('#boxCreateForm').resetForm();
+        $("#box_icon_url_add").attr('src', '').hide();
         $("label.error").remove();
         $('#boxCreateModal').modal();
     });
