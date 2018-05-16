@@ -4,6 +4,7 @@ import logging
 from config import SAVE_PATH
 from config import cookie_conf
 from config import BASE_URL
+from config import TAIL_PATH
 from runtime import g_rt
 from tools import gen_now_str
 from house_base import tools as base_tools
@@ -60,7 +61,7 @@ class UploadIconHandler(BaseHandler):
         full_name = SAVE_PATH + filename
         with open(full_name, 'wb+') as f:
             f.write(content)
-        icon_url = "/static/upload/icon/" + filename
+        icon_url = TAIL_PATH + filename
         return success(data={"icon_url": icon_url, "icon_name": filename})
 
 
@@ -68,6 +69,7 @@ class BoxCreateHandler(BaseHandler):
 
     _post_handler_fields = [
         Field('name', T_STR, False),
+        Field('box_type', T_INT, False),
         Field('available', T_INT, False),
         Field('priority', T_INT, False),
         Field('icon', T_STR, False),
@@ -94,6 +96,7 @@ class BoxViewHandler(BaseHandler):
     _post_handler_fields = [
         Field('box_id', T_INT, False),
         Field('name', T_STR, False),
+        Field('box_type', T_STR, False),
         Field('available', T_INT, False),
         Field('priority', T_INT, False),
         Field('icon', T_STR, False),

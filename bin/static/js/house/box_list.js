@@ -49,7 +49,7 @@ $(document).ready(function(){
             }
             
             $.ajax({
-                url: '/house/v1/api/box/list',
+                url: '/mis/v1/api/box/list',
                 type: 'GET',
                 dataType: 'json',
                 data: get_data,
@@ -81,6 +81,16 @@ $(document).ready(function(){
         },
         'columnDefs': [
             {
+                targets: 1,
+                render: function (data, type, full) {
+                    if (data === 0) {
+                        return '订单';
+                    } else {
+                        return '文本';
+                    }
+                }
+            },
+            {
                 targets: 2,
                 render: function (data, type, full) {
                     return '<a href=' + data + '>' + data + '</a>';
@@ -102,14 +112,22 @@ $(document).ready(function(){
                 data: '操作',
                 render: function(data, type, full) {
                     var box_id = full.id;
+                    var box_type = full.box_type;
+                    var box_type_name = '';
+                    if (box_type === 0) {
+                        box_type_name = '添加订单';
+                    } else {
+                        box_type_name = '添加文本';
+                    }
                     var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-box_id="+box_id+">"+'查看'+"</button>";
-                    return view;
+                    var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+">"+box_type_name+"</button>";
+                    return view + box;
                 }
             }
         ],
         'columns': [
-            { data: 'id'},
             { data: 'name'},
+            { data: 'box_type'},
             { data: 'icon'},
             { data: 'priority'},
             { data: 'available'},
@@ -133,24 +151,16 @@ $(document).ready(function(){
 
     $("#box_search").click(function(){
 
-        var user_query_vt = $('#users_query').validate({
+        var box_query_vt = $('#box_list_query').validate({
             rules: {
-                s_merchant_id: {
-                    required: false
-                },
-                s_mobile: {
+                box_name: {
                     required: false,
-                    // maxlength: 11
-                    isMobile: '#s_mobile'
+                    maxlength: 32
                 }
             },
             messages: {
-                s_merchant_id: {
-                    required: '请输入商户ID'
-                },
-                s_mobile: {
-                    required: '请输入手机号'
-                    // maxlength: $.validator.format("请输入一个长度最多是 {0} 的字符串")
+                box_name: {
+                    required: '请输入名称'
                 }
             },
             errorPlacement: function(error, element){
@@ -159,7 +169,7 @@ $(document).ready(function(){
                 error.appendTo($error_element);
             }
         });
-        var ok = user_query_vt.form();
+        var ok = box_query_vt.form();
         if(!ok){
             $("#query_label_error").show();
             $("#query_label_error").fadeOut(1400);
@@ -180,7 +190,7 @@ $(document).ready(function(){
         get_data.box_id = box_id;
         $('#boxViewForm').resetForm();
         $.ajax({
-	        url: '/house/v1/api/box/view',
+	        url: '/mis/v1/api/box/view',
 	        type: 'GET',
 	        dataType: 'json',
 	        data: get_data,
@@ -194,13 +204,14 @@ $(document).ready(function(){
                     return false;
                 }
                 else {
-                    box_data = data.data;
+                    text_data = data.data;
 
-                    $('#box_name_view').val(box_data.name);
-                    $('#box_available_view').val(box_data.available);
-                    $('#box_priority_view').val(box_data.priority);
-                    $("#box_icon_url_view").attr('src', box_data.icon).show();
-                    $('#box_icon_name_view').text(box_data.icon_name);
+                    $('#box_name_view').val(text_data.name);
+                    $('#box_type_view').val(text_data.box_type);
+                    $('#box_available_view').val(text_data.available);
+                    $('#box_priority_view').val(text_data.priority);
+                    $("#box_icon_url_view").attr('src', text_data.icon).show();
+                    $('#box_icon_name_view').text(text_data.icon_name);
                     $('#boxViewModal').modal();
                 }
 	        },
@@ -260,13 +271,14 @@ $(document).ready(function(){
         var post_data = {};
         post_data.se_userid = se_userid;
         post_data.name = $('#box_name_view').val();
+        post_data.box_type = $('#box_type_view').val();
         post_data.priority = $('#box_priority_view').val();
         post_data.available = $('#box_available_view').val();
         post_data.icon = $("#box_icon_name_view").text();
         post_data.box_id = $("#view_box_id").text();
 
         $.ajax({
-	        url: '/house/v1/api/box/view',
+	        url: '/mis/v1/api/box/view',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,
@@ -349,12 +361,13 @@ $(document).ready(function(){
         var post_data = {};
         post_data.se_userid = se_userid;
         post_data.name = $('#box_name_add').val();
+        post_data.box_type = $('#box_type_add').val();
         post_data.priority = $('#box_priority_add').val();
         post_data.available = $('#box_available_add').val();
         post_data.icon = $("#box_icon_name_add").text();
 
         $.ajax({
-	        url: '/house/v1/api/box/create',
+	        url: '/mis/v1/api/box/create',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,
@@ -381,6 +394,193 @@ $(document).ready(function(){
 
     });
 
+    $(document).on('click', '.addBox', function(){
+        var box_id = $(this).data('box_id');
+        var box_type = $(this).data('box_type');
+        console.log('box_id=', box_id, 'box_type=', box_type);
+        if (box_type === 0) {
+            // 订单
+            $('#orderCreateForm').resetForm();
+            $("label.error").remove();
+            $('#order_add').text(box_id);
+            $('#orderCreateModal').modal();
+        } else {
+            // 文本
+            $('#textCreateForm').resetForm();
+            $("label.error").remove();
+            $('#text_add').text(box_id);
+            $('#textCreateModal').modal();
+        }
+    });
+
+    $('#orderCreateSubmit').click(function () {
+        var order_create_vt = $('#orderCreateForm').validate({
+            rules: {
+                goods_name_add: {
+                    required: true,
+                    maxlength: 32
+                },
+                goods_price_add: {
+                    required: false,
+                    maxlength: 20,
+                    digits: true
+                },
+                goods_desc_add: {
+                    required: true,
+                    maxlength: 1024
+                }
+            },
+            messages: {
+
+                goods_name_add: {
+                    required: '请输入商品名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                goods_price_add: {
+                    required: '请输入商品价格',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串"),
+                    digits: '必须输入整数'
+                },
+                goods_desc_add: {
+                    required: '请输入商品名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = order_create_vt.form();
+        if(!ok){
+            return false;
+        }
+        picture_src = $("#goods_picture_url_add")[0].src;
+        if(picture_src === "") {
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.box_id = $('#order_add').text();
+        post_data.goods_name = $("#goods_name_add").val();
+        post_data.goods_price = $('#goods_price_add').val();
+        post_data.goods_desc = $('#goods_desc_add').val();
+        post_data.goods_picture = $('#goods_picture_name_add').text();
+
+        $.ajax({
+            url: '/mis/v1/api/order/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('添加成功');
+                    $("#orderCreateForm").resetForm();
+                    $("#orderCreateModal").modal('hide');
+                    // 切换到order列表页面
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
+    });
+
+    $('#textCreateSubmit').click(function () {
+        var text_create_vt = $('#textCreateForm').validate({
+            rules: {
+                text_name_add: {
+                    required: true,
+                    maxlength: 32
+                },
+                text_content_add: {
+                    required: true,
+                    maxlength: 500
+                }
+            },
+            messages: {
+
+                text_name_add: {
+                    required: '请输入名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                text_content_add: {
+                    required: '请输入内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = text_create_vt.form();
+        if(!ok){
+            return false;
+        }
+        icon_src = $("#text_icon_url_add")[0].src;
+        if(icon_src === "") {
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.box_id = $('#text_add').text();
+        post_data.name = $("#text_name_add").val();
+        post_data.content = $('#text_content_add').val();
+        post_data.available = $('#text_available_add').val();
+        post_data.icon = $('#text_icon_name_add').text();
+
+        $.ajax({
+            url: '/mis/v1/api/text/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('添加成功');
+                    $("#textCreateForm").resetForm();
+                    $("#textCreateModal").modal('hide');
+                    // 切换到text列表页面
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
+
+    });
 
 });
 
@@ -392,7 +592,7 @@ function upload_file(obj) {
     formData.append("name", name);
     formData.append("se_userid", se_userid);
     $.ajax({
-        url: "/house/v1/api/icon/upload",
+        url: "/mis/v1/api/icon/upload",
         type: "POST",
         data: formData,
         processData: false,
@@ -423,7 +623,7 @@ function upload_view_file(obj) {
     formData.append("name", name);
     formData.append("se_userid", se_userid);
     $.ajax({
-        url: "/house/v1/api/icon/upload",
+        url: "/mis/v1/api/icon/upload",
         type: "POST",
         data: formData,
         processData: false,
@@ -438,6 +638,67 @@ function upload_view_file(obj) {
             name = detail_data.icon_name;
             $("#box_icon_url_view").attr('src', src).show();
             $("#box_icon_name_view").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+
+function upload_goods_picture_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#goodsPictureCreateUpload").val();
+    formData.append("file", $("#goodsPictureCreateUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#goods_picture_url_add").attr('src', src).show();
+            $("#goods_picture_name_add").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function upload_text_icon_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#textIconCreateUpload").val();
+    formData.append("file", $("#textIconCreateUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#text_icon_url_add").attr('src', src).show();
+            $("#text_icon_name_add").text(name);
         },
         error: function (response) {
             console.log(response);

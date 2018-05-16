@@ -8,7 +8,7 @@ $(document).ready(function(){
 				'password': md5(password),
 			}
             $.ajax({
-	            url: '/house/v1/api/login',
+	            url: '/mis/v1/api/login',
 	            type: 'POST',
 	            type: 'POST',
 	            dataType: 'json',
@@ -24,7 +24,7 @@ $(document).ready(function(){
                     } else {
                         var userid = data.data.userid;
                         window.localStorage.setItem('myid', userid);
-                        window.location.href="/house/v1/page/box_list.html";
+                        window.location.href="/mis/v1/page/box_list.html";
 					}
 	            },
 	            error: function(data) {
@@ -53,7 +53,7 @@ $(document).ready(function(){
             'mobile': mobile,
         }
         $.ajax({
-	        url: '/house/v1/api/sms_send',
+	        url: '/mis/v1/api/sms_send',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,
@@ -92,7 +92,7 @@ $(document).ready(function(){
             'password': md5(password)
         }
         $.ajax({
-	        url: '/house/v1/api/passwd_change',
+	        url: '/mis/v1/api/passwd_change',
 	        type: 'POST',
 	        dataType: 'json',
 	        data: post_data,

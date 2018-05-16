@@ -12,7 +12,7 @@ log = logging.getLogger()
 
 class Root(core.Handler):
     def GET(self):
-        self.redirect('/house/v1/page/login.html')
+        self.redirect('/mis/v1/page/login.html')
 
 
 class Login(core.Handler):
@@ -24,3 +24,15 @@ class BoxList(core.Handler):
     @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
     def GET(self):
         self.write(template.render('box_list.html'))
+
+
+class OrderList(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
+    def GET(self):
+        self.write(template.render('order.html'))
+
+
+class TextList(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
+    def GET(self):
+        self.write(template.render('text.html'))
