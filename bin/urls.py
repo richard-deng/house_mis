@@ -7,6 +7,7 @@ from handler import (
     box_list,
     order,
     text,
+    user,
 )
 
 urls = (
@@ -14,6 +15,10 @@ urls = (
     ('^/ping$', ping.Ping),
     ('^/mis/v1/api/login$', login.LoginHandler),
     ('^/mis/v1/api/logout$', login.LogoutHandler),
+
+    # 用户
+    ('^/mis/v1/api/user/list$', user.UserListHandler),
+    ('^/mis/v1/api/user/view$', user.UserViewHandler),
 
     # 九宫格
     ('^/mis/v1/api/box/list$', box_list.BoxListHandler),
