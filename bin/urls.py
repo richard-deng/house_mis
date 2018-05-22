@@ -18,6 +18,7 @@ urls = (
 
     # 用户
     ('^/mis/v1/api/user/list$', user.UserListHandler),
+    ('^/mis/v1/api/user/create$', user.UserCreateHandler),
     ('^/mis/v1/api/user/view$', user.UserViewHandler),
 
     # 九宫格

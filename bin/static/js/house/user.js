@@ -2,6 +2,11 @@
  * Created by admin on 2018/5/22.
  */
 $(document).ready(function () {
+    $.validator.addMethod("isMobile", function(value, element) {
+            var length = value.length;
+            var mobile = /^(1\d{10})$/;
+            return this.optional(element) || (length === 11 && mobile.test(value));
+        }, "请正确填写您的手机号码");
 
     $('#userList').DataTable({
         "autoWidth": false,     //通常被禁用作为优化
@@ -91,9 +96,9 @@ $(document).ready(function () {
         ],
         'columns': [
             { data: 'id'},
-            { data: 'nickname'},
+            { data: 'name'},
             { data: 'mobile'},
-            { data: 'status_desc'},
+            { data: 'state_desc'},
             { data: 'date_joined'}
         ],
         'oLanguage': {
@@ -111,5 +116,121 @@ $(document).ready(function () {
         }
     });
 
+    $('#userCreate').click(function(){
+        $('#userCreateForm').resetForm();
+        $("label.error").remove();
+        $('#userCreateModal').modal();
+    });
 
+    $('#userCreateSubmit').click(function(){
+
+        var user_create_vt = $('#userCreateForm').validate({
+            rules: {
+                mobile_add: {
+                    required: true,
+                    // maxlength: 16
+                    isMobile: '#mobile_add'
+                },
+                email_add: {
+                    required: true,
+                    email: true,
+                    maxlength: 75
+                },
+                name_add: {
+                    required: true,
+                    maxlength: 32
+                },
+                idnumber_add: {
+                    required: false,
+                    maxlength: 20
+                },
+                province_add: {
+                    required: false,
+                    maxlength: 10
+                },
+                city_add: {
+                    required: false,
+                    maxlength: 32
+                }
+            },
+            messages: {
+                mobile_add: {
+                    required: '请输入手机号'
+                },
+                email_add: {
+                    required: '请输入邮箱',
+                    email: "请输入正确格式的电子邮件",
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                name_add: {
+                    required: '请输入商户名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                idnumber_add: {
+                    required: '请输入身份证号',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                province_add: {
+                    required: '请输入省份',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                city_add: {
+                    required: '请输入城市',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = user_create_vt.form();
+        if(!ok){
+            return false;
+        }
+
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.mobile = $('#mobile_add').val();
+        post_data.email = $('#email_add').val();
+        post_data.name = $('#name_add').val();
+        post_data.idnumber = $('#idnumber_add').val();
+        post_data.province = $('#province_add').val();
+        post_data.city = $('#city_add').val();
+
+        $.ajax({
+            url: '/mis/v1/api/user/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('添加成功');
+                    $("#userCreateForm").resetForm();
+                    $("#userCreateModal").modal('hide');
+                    $('#userList').DataTable().draw();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
+
+    });
 });

@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-
+import hashlib
 import logging
 import datetime
 from constant import INVALID_VALUE
 from house_base.define import TOKEN_HOUSE_CORE
-from house_base.user import User
+from house_base.user import User, gen_passwd
 from house_base.profile import Profile
 from zbase.base.dbpool import get_connection_exception
+from zbase.web.validator import T_INT
 
+from config import (
+    REGISTER_STATE, DEFAULT_ACTIVE,
+)
 log = logging.getLogger()
 
 
@@ -62,3 +66,78 @@ def update_merchant(user_id, values):
     if profile_value:
         profile = Profile(user_id)
         profile.update(profile_value)
+
+def build_profile(values):
+    # 添加其它数据
+    func = 'build_profile'
+    log.debug('func=%s|input=%s', func, values)
+
+    profile = {}
+    now = datetime.datetime.now()
+
+    for key in Profile.KEYS:
+        value = values.get(key)
+        if key in Profile.MUST_KEY.keys():
+            if value not in INVALID_VALUE:
+                profile[key] = value
+            else:
+                if Profile.MUST_KEY.get(key) == T_INT:
+                    profile[key] = 0
+                else:
+                    profile[key] = ''
+
+        if key in Profile.OPTION_KEY.keys():
+            if value not in INVALID_VALUE:
+                profile[key] = value
+
+        for key in Profile.DATETIME_KEY.keys():
+            if Profile.DATETIME_KEY.get(key) == 'date':
+                profile[key] = now.strftime('%Y-%m-%d')
+            if Profile.DATETIME_KEY.get(key) == 'datetime':
+                profile[key] = now.strftime('%Y-%m-%d %H:%M:%S')
+
+    log.debug('func=%s|output=%s', func, profile)
+    return profile
+
+def build_user(values):
+    func='build_user'
+    log.debug('func=%s|input=%s', func, values)
+    user = {}
+    now = datetime.datetime.now()
+
+    for key in User.KEYS:
+        value = values.get(key)
+        if key in User.MUST_KEY.keys():
+            if value not in INVALID_VALUE:
+                user[key] = value
+            else:
+                if User.MUST_KEY.get(key) == T_INT:
+                    user[key] = 0
+                else:
+                    user[key] = ''
+
+        if key in User.OPTION_KEY.keys():
+            if value not in INVALID_VALUE:
+                user[key] = value
+
+        for key in User.DATETIME_KEY.keys():
+            if User.DATETIME_KEY.get(key) == 'date':
+                user[key] = now.strftime('%Y-%m-%d')
+            if User.DATETIME_KEY.get(key) == 'datetime':
+                user[key] = now.strftime('%Y-%m-%d %H:%M:%S')
+
+    user['state'] = REGISTER_STATE
+    user['is_active'] = DEFAULT_ACTIVE
+    password = values.get('mobile')[-6:]
+    h = hashlib.md5(password)
+    md5_password = h.hexdigest()
+    log.info('md5_password=%s', md5_password)
+    user['password'] = gen_passwd(md5_password)
+    log.debug('func=%s|output=%s', func, user)
+    return user
+
+def create_merchant(values):
+    profile = build_profile(values)
+    user = build_user(values)
+    flag, userid = User.create(user, profile)
+    return flag, userid

@@ -7,6 +7,7 @@ import traceback
 from runtime import g_rt
 from config import cookie_conf
 from house_base.base_handler import BaseHandler
+from house_base.user import User
 from constant import INVALID_VALUE
 from zbase.base.dbpool import with_database
 from house_base.response import error, success, RESP_CODE
@@ -134,9 +135,6 @@ class UserCreateHandler(BaseHandler):
         Field('idnumber', T_STR, True),
         Field('province', T_STR, True),
         Field('city', T_STR, True),
-        Field('bankname', T_STR, True),
-        Field('bankuser', T_STR, True),
-        Field('bankaccount', T_STR, True),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -146,10 +144,12 @@ class UserCreateHandler(BaseHandler):
 
         # 是否已经注册
         mobile = params.get('mobile')
-        ret = tools.find_user_by_mobile(mobile)
-        if ret:
+        user = User.load_user_by_mobile(mobile)
+        if user.data:
             return error(RESP_CODE.DATAEXIST, resperr='手机号已存在')
-
+        # 默认用用户名称和手机号一样
+        params['username'] = params['mobile']
+        params['nickname'] = params['name']
         flag, userid = tools.create_merchant(params)
         if flag:
             return success(data={'userid': userid})

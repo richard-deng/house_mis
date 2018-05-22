@@ -40,7 +40,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
-    # @unittest.skip("skipping")
+    @unittest.skip("skipping")
     def test_user_list(self):
         self.url = '/mis/v1/api/user/list'
         self.send.update({
@@ -69,6 +69,22 @@ class TestHouseMisInstrument(unittest.TestCase):
         self.send.update({
             'user_id': 1,
             'name': 'ddddd'
+        })
+        ret = self.client.post(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
+
+    # @unittest.skip("skipping")
+    def test_user_create(self):
+        self.url = '/mis/v1/api/user/create'
+        self.send.update({
+            'mobile': '13802438717',
+            'email': 'richard.deng@live.com',
+            'name': 'richard.deng',
+            'idnumber': '511321198707129249',
+            'province': '四川省',
+            'city': '成都市',
         })
         ret = self.client.post(self.url, self.send, cookies=self.cookie)
         log.info(ret)
