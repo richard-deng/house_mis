@@ -45,6 +45,7 @@ class UserListHandler(BaseHandler):
             'auth_user.date_joined','profile.nickname', 'profile.name',
             'profile.idnumber',
         ]
+        log.debug('where: %s', where)
         sql = self.db.select_join_sql(
             table1='auth_user',
             table2='profile',

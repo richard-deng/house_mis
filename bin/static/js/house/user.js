@@ -44,14 +44,14 @@ $(document).ready(function () {
             var mobile = $("#s_mobile").val();
 
             if(mobile){
-                get_data.moblie = mobile;
+                get_data.mobile = mobile;
             }
 
-            var user_id = $("s_user_id").val();
+            var user_id = $("#s_user_id").val();
             if(user_id) {
-                get_data.userid = user_id;
+                get_data.user_id = user_id;
             }
-
+            console.log('get_data:', get_data);
             $.ajax({
                 url: '/mis/v1/api/user/list',
                 type: 'GET',
@@ -163,7 +163,7 @@ $(document).ready(function () {
                     maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
                 },
                 name_add: {
-                    required: '请输入商户名称',
+                    required: '请输入名称',
                     maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
                 },
                 idnumber_add: {
@@ -232,5 +232,192 @@ $(document).ready(function () {
         });
 
 
+    });
+
+    $(document).on('click', '.viewEdit', function(){
+        $("label.error").remove();
+        var se_userid = window.localStorage.getItem('myid');
+        var userid = $(this).data('user_id');
+        $('#view_user_id').text(userid);
+
+        var get_data = {};
+        get_data.se_userid = se_userid;
+        get_data.user_id = userid;
+        $('#userViewForm').resetForm();
+        $.ajax({
+            url: '/mis/v1/api/user/view',
+            type: 'GET',
+            dataType: 'json',
+            data: get_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    user_data = data.data;
+
+                    $('#mobile').val(user_data.mobile);
+                    $('#email').val(user_data.email);
+                    $('#name').val(user_data.name);
+                    $('#idnumber').val(user_data.idnumber);
+                    $('#province').val(user_data.province);
+                    $('#city').val(user_data.city);
+                    $('#userViewModal').modal();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
+    });
+
+    $('#userViewSubmit').click(function(){
+        var user_edit_vt = $('#userViewForm').validate({
+            rules: {
+                mobile: {
+                    required: true,
+                    isMobile: '#mobile'
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    maxlength: 75
+                },
+                name: {
+                    required: true,
+                    maxlength: 32
+                },
+                idnumber: {
+                    required: false,
+                    maxlength: 20
+                },
+                province: {
+                    required: false,
+                    maxlength: 10
+                },
+                city: {
+                    required: false,
+                    maxlength: 32
+                }
+            },
+            messages: {
+                mobile: {
+                    required: '请输入手机号'
+                },
+                email: {
+                    required: '请输入邮箱',
+                    email: "请输入正确格式的电子邮件",
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                name: {
+                    required: '请输入名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                idnumber: {
+                    required: '请输入身份证号',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                province: {
+                    required: '请输入省份',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                city: {
+                    required: '请输入城市',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = user_edit_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.user_id = $('#view_user_id').text();
+        post_data.mobile = $('#mobile').val();
+        post_data.email = $('#email').val();
+        post_data.name = $('#name').val();
+        post_data.idnumber = $('#idnumber').val();
+        post_data.province = $('#province').val();
+        post_data.city = $('#city').val();
+
+        $.ajax({
+            url: '/mis/v1/api/user/view',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('保存修改成功');
+                    $("#userViewForm").resetForm();
+                    $("#userViewModal").modal('hide');
+                    $('#userList').DataTable().draw();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
+    });
+
+    $("#userSearch").click(function(){
+
+        var user_query_vt = $('#users_query').validate({
+            rules: {
+                s_user_id: {
+                    required: false
+                },
+                s_mobile: {
+                    required: false,
+                    isMobile: '#s_mobile'
+                }
+            },
+            messages: {
+                s_user_id: {
+                    required: '请输入用户ID'
+                },
+                s_mobile: {
+                    required: '请输入手机号'
+                }
+            },
+            errorPlacement: function(error, element){
+                var $error_element = element.parent().parent().next();
+                $error_element.text('');
+                error.appendTo($error_element);
+            }
+        });
+        var ok = user_query_vt.form();
+        if(!ok){
+            $("#query_label_error").show();
+            $("#query_label_error").fadeOut(1400);
+            return false;
+        }
+        $('#userList').DataTable().draw();
     });
 });
