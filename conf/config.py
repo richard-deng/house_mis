@@ -70,6 +70,8 @@ DEFAULT_ACTIVE = 1
 TERMBIND_STATE = 2
 #允许登录的手机号
 ALLOW_LOGIN_MOBILE = ['13802438716']
+#允许添加用户的账号
+ALLOW_ADD_USER_ID = [1]
 #cookie 配置
 cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'127.0.0.1', 'path':'/mis'}
 # cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'120.27.15.131', 'path':'/mis'}

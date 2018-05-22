@@ -5,7 +5,7 @@ import logging
 import traceback
 
 from runtime import g_rt
-from config import cookie_conf
+from config import cookie_conf, ALLOW_ADD_USER_ID
 from house_base.base_handler import BaseHandler
 from house_base.user import User
 from constant import INVALID_VALUE
@@ -142,7 +142,11 @@ class UserCreateHandler(BaseHandler):
     @with_validator_self
     def _post_handler(self):
         params = self.validator.data
-
+        # 先检查该用户是否有权限添加用户
+        admin = self.user.userid
+        if admin not in ALLOW_ADD_USER_ID:
+            log.info('admin=%s|is denied')
+            return error(RESP_CODE.DATAERR, resperr='该用户没有权限添加用户')
         # 是否已经注册
         mobile = params.get('mobile')
         user = User.load_user_by_mobile(mobile)
