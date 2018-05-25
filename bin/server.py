@@ -25,6 +25,7 @@ config.URLS = urls.urls
 
 def install_db():
     dbpool.install(config.database)
+    log.debug('dbpool:%s', dbpool.dbpool)
 
 log.info('<<< server start >>>')
 install_db()

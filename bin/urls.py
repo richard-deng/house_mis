@@ -7,6 +7,7 @@ from handler import (
     box_list,
     order,
     text,
+    user,
 )
 
 urls = (
@@ -14,6 +15,11 @@ urls = (
     ('^/ping$', ping.Ping),
     ('^/mis/v1/api/login$', login.LoginHandler),
     ('^/mis/v1/api/logout$', login.LogoutHandler),
+
+    # 用户
+    ('^/mis/v1/api/user/list$', user.UserListHandler),
+    ('^/mis/v1/api/user/create$', user.UserCreateHandler),
+    ('^/mis/v1/api/user/view$', user.UserViewHandler),
 
     # 九宫格
     ('^/mis/v1/api/box/list$', box_list.BoxListHandler),
@@ -34,8 +40,12 @@ urls = (
     # 页面
     ('^/$', page.Root),
     ('^/mis/v1/page/login.html$', page.Login),
+    ('^/mis/v1/page/user_list.html$', page.UserList),
     ('^/mis/v1/page/box_list.html$', page.BoxList),
     ('^/mis/v1/page/order_list.html$', page.OrderList),
     ('^/mis/v1/page/text_list.html$', page.TextList),
+
+    # 测试summernote文件上传
+    ('^/mis/v1/page/test_summernote.html$', page.TestSummerNote),
 
 )
