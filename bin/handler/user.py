@@ -145,7 +145,7 @@ class UserCreateHandler(BaseHandler):
         # 先检查该用户是否有权限添加用户
         admin = self.user.userid
         if admin not in ALLOW_ADD_USER_ID:
-            log.info('admin=%s|is denied')
+            log.info('admin=%s|is denied', admin)
             return error(RESP_CODE.DATAERR, resperr='该用户没有权限添加用户')
         # 是否已经注册
         mobile = params.get('mobile')
