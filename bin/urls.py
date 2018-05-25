@@ -45,4 +45,7 @@ urls = (
     ('^/mis/v1/page/order_list.html$', page.OrderList),
     ('^/mis/v1/page/text_list.html$', page.TextList),
 
+    # 测试summernote文件上传
+    ('^/mis/v1/page/test_summernote.html$', page.TestSummerNote),
+
 )
