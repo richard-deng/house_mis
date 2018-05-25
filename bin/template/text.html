@@ -13,6 +13,12 @@
     .dataTables_length {
         padding-left: 30px!important;
     }
+    textarea {
+        width: 470px!important;
+        height: 200px!important;
+        max-width: 470px!important;
+        max-height: 200px!important;
+    }
 </style>
 </%block>
 
@@ -82,7 +88,10 @@
                     <div class="form-group">
                         <label for="text_content_view" class="col-sm-2 control-label">内容</label>
                         <div class="col-sm-10">
+                            <!--
                             <input type="text" class="form-control" id="text_content_view" name="text_content_view" placeholder="必填">
+                            -->
+                            <textarea class="form-control" id="text_content_view" name="text_content_view" placeholder="必填"></textarea>
                         </div>
                     </div>
 

@@ -48,8 +48,8 @@ class BoxListHandler(BaseHandler):
 
 class UploadIconHandler(BaseHandler):
 
-    @house_check_session(g_rt.redis_pool, cookie_conf)
-    @with_validator_self
+    # @house_check_session(g_rt.redis_pool, cookie_conf)
+    # @with_validator_self
     def _post_handler(self):
         data = self.req.input()
         all_name = data.get('name')

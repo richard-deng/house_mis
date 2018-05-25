@@ -36,3 +36,13 @@ class TextList(core.Handler):
     @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
     def GET(self):
         self.write(template.render('text.html'))
+
+
+class UserList(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
+    def GET(self):
+        self.write(template.render('user.html'))
+
+class TestSummerNote(core.Handler):
+    def GET(self):
+        self.write(template.render('test_summernote.html'))
