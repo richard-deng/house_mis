@@ -63,13 +63,13 @@ PORT = 8083
 #redis
 redis_url = 'redis://127.0.0.1:6379/0'
 #用户注册状态
-REGISTER_STATE = 2
+REGISTER_STATE = 4
 #注册激活
 DEFAULT_ACTIVE = 1
 # 终端绑定默认2
 TERMBIND_STATE = 2
 #允许登录的手机号
-ALLOW_LOGIN_MOBILE = ['13802438716']
+ALLOW_LOGIN_MOBILE = ['13802438716', '13802438717']
 #允许添加用户的账号
 ALLOW_ADD_USER_ID = [1]
 #cookie 配置
