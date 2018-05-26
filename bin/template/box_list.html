@@ -293,8 +293,8 @@
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="textCreateModal">
-    <div class="modal-dialog" role="document">
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="textCreateModal">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -304,25 +304,15 @@
                 <form class="form-horizontal" id="textCreateForm" role="form">
 
                     <div class="form-group">
-                        <label for="text_name_add" class="col-sm-2 control-label">名称</label>
-                        <div class="col-sm-10">
+                        <label for="text_name_add" class="col-md-2 control-label">名称</label>
+                        <div class="col-md-10">
                             <input type="text" class="form-control" id="text_name_add" name="text_name_add" placeholder="必填">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="text_content_add" class="col-sm-2 control-label">内容</label>
-                        <div class="col-sm-10">
-                            <!--
-                            <input type="text" class="form-control" id="text_content_add" name="text_content_add" placeholder="必填">
-                            -->
-                            <textarea class="form-control" id="text_content_add" name="text_content_add" placeholder="必填"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="text_available_add" class="col-sm-2 control-label">是否启用</label>
-                        <div class="col-sm-10">
+                        <label for="text_available_add" class="col-md-2 control-label">是否启用</label>
+                        <div class="col-md-10">
                             <select class="form-control" id="text_available_add" name="text_available_add">
                                 <option value="0">关闭</option>
                                 <option value="1">打开</option>
@@ -331,11 +321,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="text_icon_url_add" class="col-sm-2 control-label">图标链接</label>
-                        <div class="col-sm-2">
+                        <label for="text_icon_url_add" class="col-md-2 control-label">图标链接</label>
+                        <div class="col-md-2">
                             <input type="file" id="textIconCreateUpload" onchange="upload_text_icon_file(this)">
                         </div>
-                        <div class="col-sm-5">
+                        <div class="col-md-5">
 
                         </div>
                         <div class="p_img_l">
@@ -344,6 +334,17 @@
                                 <span id="text_icon_name_add" hidden></span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!--
+                        <label for="text_content_add" class="col-sm-2 control-label">内容</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" id="text_content_add" name="text_content_add" placeholder="必填"></textarea>
+                        </div>
+                        -->
+                        <div class="col-md-8">.col-md-4</div>
+                        <div class="col-md-4">.col-md-4 .col-md-offset-4</div>
                     </div>
 
                 </form>

@@ -43,6 +43,7 @@ urls = (
     ('^/mis/v1/page/user_list.html$', page.UserList),
     ('^/mis/v1/page/box_list.html$', page.BoxList),
     ('^/mis/v1/page/order_list.html$', page.OrderList),
+    ('^/mis/v1/page/text_edit.html$', page.TextEdit),
     ('^/mis/v1/page/text_list.html$', page.TextList),
 
     # 测试summernote文件上传

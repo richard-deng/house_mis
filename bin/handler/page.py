@@ -46,3 +46,8 @@ class UserList(core.Handler):
 class TestSummerNote(core.Handler):
     def GET(self):
         self.write(template.render('test_summernote.html'))
+
+class TextEdit(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
+    def GET(self):
+        self.write(template.render('text_edit.html'))
