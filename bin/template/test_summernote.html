@@ -1,0 +1,110 @@
+## -*- coding: utf-8 -*-
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- include libraries(jQuery, bootstrap) -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+
+    <!-- include summernote css/js -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+    <!-- include lang -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/lang/summernote-zh-CN.js"></script>
+    <style type="text/css">
+        #article_content{
+            background-color: #979797;
+            width: 300px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4" id="left">
+                <form method="post">
+                    <textarea id="summernote" name="editordata"></textarea>
+                </form>
+            </div>
+            <div class="col-md-2" id="article_content" value=""></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                //height: 300,
+                minHeight: null,
+                maxHeight: null,
+                //width: 500,
+                minWidth: null,
+                maxWidth: null,
+                focus: true,
+                lang: 'zh-CN',
+                dialogsInBody: true,
+                /*
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['insert', ['picture', 'link']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                ],
+                */
+
+                callbacks: {
+                    onImageUpload: function(files) {
+                        //由于summernote上传图片上传的是二进制数据
+                        //所以这里可以自己重新上传图片方法
+                        var formData = new FormData();
+                        var name = files[0]['name'];
+                        console.log('name:', name);
+                        formData.append('file',files[0]);
+                        formData.append("name", name);
+                        $.ajax({
+                            url : '/mis/v1/api/icon/upload', //后台文件上传接口
+                            type : 'POST',
+                            data : formData,
+                            processData : false,
+                            contentType : false,
+                            success : function(data) {
+                                console.log('data:', data);
+                                detail_data = data.data;
+                                src = detail_data.icon_url;
+                                //var imgJson = eval('(' + data + ')');
+                                //var imgStr = ' '+baseurl+imgJson.file_url;
+                                //设置到编辑器中
+                                $('#summernote').summernote('insertImage',src,'img');
+                            },
+                            error:function(){
+                                alert("上传失败...");
+                            }
+                        });
+                    }
+                }
+            });
+
+            $('#summernote').on('summernote.change', function(we, contents, $editable) {
+                console.log('summernote\'s content is changed.');
+                var content = $('#summernote').summernote('code');
+                $('#article_content').html(content);
+                $('#article_content').show();
+            });
+
+
+            $('#preview').click(function(event) {
+                /* Act on the event */
+                console.log('preview');
+                var content = $('#summernote').summernote('code');
+                $('#article_content').html(content);
+                $('#article_content').show();
+            });
+        });
+    </script>
+</body>
+</html>
