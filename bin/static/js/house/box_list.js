@@ -512,10 +512,12 @@ $(document).ready(function(){
                     required: true,
                     maxlength: 32
                 },
+                /*
                 text_content_add: {
                     required: true,
                     maxlength: 500
                 }
+                */
             },
             messages: {
 
@@ -523,10 +525,12 @@ $(document).ready(function(){
                     required: '请输入名称',
                     maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
                 },
+                /*
                 text_content_add: {
                     required: '请输入内容',
                     maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
                 }
+                */
             },
             errorPlacement: function(error, element){
                 if(element.is(':checkbox')){
@@ -552,7 +556,8 @@ $(document).ready(function(){
         post_data.se_userid = se_userid;
         post_data.box_id = $('#text_add').text();
         post_data.name = $("#text_name_add").val();
-        post_data.content = $('#text_content_add').val();
+        //post_data.content = $('#text_content_add').val();
+        post_data.content = $('#summernote').summernote('code');
         post_data.available = $('#text_available_add').val();
         post_data.icon = $('#text_icon_name_add').text();
 
