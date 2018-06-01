@@ -81,5 +81,5 @@ SAVE_PATH = '/Users/admin/Documents/develop/myproject/house/house_mis/bin/static
 #
 TAIL_PATH = '/mis/static/upload/icon/'
 # 链接前缀
-# BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + TAIL_PATH
-BASE_URL = 'http://' + cookie_conf.get('domain') + TAIL_PATH
+BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + TAIL_PATH
+# BASE_URL = 'http://' + cookie_conf.get('domain') + TAIL_PATH
