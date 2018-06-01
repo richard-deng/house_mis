@@ -1,5 +1,7 @@
 # coding: utf-8
 import logging
+import base64
+import traceback
 
 from config import cookie_conf
 from config import BASE_URL
@@ -31,6 +33,7 @@ class TextInfoCreateHandler(BaseHandler):
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self
     def _post_handler(self):
+        content_str = ''
         params = self.validator.data
         content = params.pop('content')
         box_id = params.get('box_id')
@@ -43,8 +46,16 @@ class TextInfoCreateHandler(BaseHandler):
         log.debug('class=TextInfoCreateHandler|create text info ret=%s', ret)
         if ret != 1:
             return error(errcode=RESP_CODE.DATAERR)
+        log.debug('content=%s', content)
+        if isinstance(content, list) and content:
+            for item in content:
+                content_str += item
+        else:
+            content_str = content
+        base64_str = base64.b64encode(content_str)
+        log.debug('base64_str=%s', base64_str)
         detail_values = {
-            'content': content,
+            'content': base64_str,
             'text_id': text_id
         }
         ret = TextDetail.create(detail_values)
@@ -83,7 +94,14 @@ class TextInfoListHandler(BaseHandler):
                 item['icon_name'] = icon_name
                 base_tools.trans_time(item, BoxList.DATETIME_KEY)
                 detail = TextDetail.load_by_text_id(text_id)
-                item['content'] = detail.data.get('content') if detail.data else ''
+                # item['content'] = detail.data.get('content') if detail.data else ''
+                try:
+                    content_str = detail.data.get('content') if detail.data else ''
+                    content = base64.b64decode(content_str)
+                except Exception:
+                    log.warn(traceback.format_exc())
+                    content = detail.data.get('content') if detail.data else ''
+                item['content'] = content
         data['info'] = info
         return success(data=data)
 
@@ -113,7 +131,14 @@ class TextInfoViewHandler(BaseHandler):
         if not text.data:
             return error(errcode=RESP_CODE.DATAERR)
         detail = TextDetail.load_by_text_id(text_id)
-        text.data['content'] = detail.data.get('content') if detail.data else ''
+        # text.data['content'] = detail.data.get('content') if detail.data else ''
+        try:
+            content_str = detail.data.get('content') if detail.data else ''
+            content = base64.b64decode(content_str)
+        except Exception:
+            log.warn(traceback.format_exc())
+            content = detail.data.get('content') if detail.data else ''
+        text.data['content'] = content
         data = text.data
         icon_name = data['icon']
         data['icon'] = BASE_URL + icon_name
@@ -123,6 +148,7 @@ class TextInfoViewHandler(BaseHandler):
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self
     def _post_handler(self):
+        content_str = ''
         params = self.validator.data
         content = params.pop('content')
         text_id = params.pop('text_id')
@@ -136,8 +162,15 @@ class TextInfoViewHandler(BaseHandler):
             return error(errcode=RESP_CODE.DATAERR)
         detail = TextDetail.load_by_text_id(text_id)
         detail_id = detail.data.get('id')
+        log.debug('content=%s', content)
+        if isinstance(content, list) and content:
+            for item in content:
+                content_str += item
+        else:
+            content_str = content
         detail_values = {
-            'content': content
+            #'content': content,
+            'content': base64.b64encode(content_str)
         }
         d = TextDetail(detail_id)
         ret = d.update(detail_values)
