@@ -88,12 +88,14 @@ $(document).ready(function () {
         }
     });
 
+    /*
     $('#container').on("changed.jstree", function (e, data) {
         console.log(data.selected);
         console.log(data.changed.selected);	// newly selected
         console.log(data.changed.deselected); // newly deselected
 
     });
+    */
 
     $('#select_one').on("click", function () {
         var instance = $('#container').jstree(true);
@@ -158,8 +160,8 @@ $(document).ready(function () {
 
     $('#do_rename').click(function(){
         console.log('rename');
-        var ref = $('#container').jstree(true),
-            sel = ref.get_selected();
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
         console.log('selected ', sel);
         /*
          var sel_id = sel[0];
@@ -174,12 +176,12 @@ $(document).ready(function () {
     });
 
     $('#do_delete').click(function(){
-        var ref = $('#container').jstree(true),
-            sel = ref.get_selected();
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
         console.log('selected ', sel);
         var sel_id = sel[0];
-        var inst = $.jstree.reference(sel_id),
-            obj = inst.get_node(sel_id);
+        var inst = $.jstree.reference(sel_id);
+        var obj = inst.get_node(sel_id);
         if(inst.is_selected(obj)) {
             inst.delete_node(inst.get_selected());
         }
