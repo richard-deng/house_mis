@@ -121,9 +121,17 @@ $(document).ready(function () {
         var parent = psel[0];
         console.log('selected ', sel);
         var sel_id = sel[0];
+        var inst = $.jstree.reference(sel_id);
+        var obj = inst.get_node(sel_id);
+        var category = obj.original.category;
+        console.log('category: ', category);
+        if (category === 2){
+            window.alert('答案不能再添加');
+            return;
+        }
         var question = window.prompt('请输入问题');
-
         if(question){
+
             create_node(sel_id, question, 1);
             /*
             var inst = $.jstree.reference(sel_id);
@@ -152,14 +160,16 @@ $(document).ready(function () {
         var sel_id = sel[0];
         var inst = $.jstree.reference(sel_id);
         var obj = inst.get_node(sel_id);
-        var category = obj.category;
+        var category = obj.original.category;
         console.log('category: ', category);
-        if (category === 'answer'){
+        if (category === 2){
             window.alert('答案不能再添加');
             return;
         }
         var answer = window.prompt('请输入答案');
         if(answer){
+            create_node(sel_id, answer, 2);
+            /*
             inst.create_node(obj, {}, "last", function (new_node) {
                 try {
                     new_node.text=answer;
@@ -171,6 +181,7 @@ $(document).ready(function () {
                     setTimeout(function () { inst.edit(new_node); },0);
                 }
             });
+            */
         }
     });
 
