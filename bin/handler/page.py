@@ -48,5 +48,6 @@ class TestSummerNote(core.Handler):
         self.write(template.render('test_summernote.html'))
 
 class QuestionList(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
     def GET(self):
         self.write(template.render('questions.html'))

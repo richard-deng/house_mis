@@ -8,6 +8,7 @@ from handler import (
     order,
     text,
     user,
+    questions,
 )
 
 urls = (
@@ -36,6 +37,10 @@ urls = (
     ('^/mis/v1/api/text/list$', text.TextInfoListHandler),
     ('^/mis/v1/api/text/view$', text.TextInfoViewHandler),
     ('^/mis/v1/api/text/create$', text.TextInfoCreateHandler),
+
+    # 问答
+    ('^/mis/v1/api/question/list$', questions.QuestionsListHandler),
+    ('^/mis/v1/api/question/create$', questions.QuestionAddHandler),
 
     # 页面
     ('^/$', page.Root),

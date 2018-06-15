@@ -2,6 +2,9 @@
  * Created by admin on 2018/6/15.
  */
 $(document).ready(function () {
+    //get_tree();
+    var se_userid = window.localStorage.getItem('myid');
+    var question_url = '/mis/v1/api/question/list?se_userid=' + se_userid;
     $('#container').jstree({
         'core' : {
             'multiple': false,		//单选
@@ -10,6 +13,7 @@ $(document).ready(function () {
                 "stripes": true
             },
             'check_callback': true, // 允许所有修改
+            /*
             'data' : [{
                 "id" : -1,
                 "text" : "Root node",
@@ -29,6 +33,12 @@ $(document).ready(function () {
                     }
                 ]
             }]
+            */
+            'data': {
+                // "url": "/mis/v1/api/question/list?se_userid=1",
+                "url": question_url,
+                "dataType": "json"
+            }
         },
         "plugins" : ["dnd", "contextmenu", "changed", "types"],
         "contextmenu":{
@@ -107,10 +117,15 @@ $(document).ready(function () {
         console.log('add question');
         var ref = $('#container').jstree(true);
         var sel = ref.get_selected();
+        var psel = ref.get_parent(sel);
+        var parent = psel[0];
         console.log('selected ', sel);
         var sel_id = sel[0];
         var question = window.prompt('请输入问题');
+
         if(question){
+            create_node(sel_id, question, 1);
+            /*
             var inst = $.jstree.reference(sel_id);
             var obj = inst.get_node(sel_id);
             inst.create_node(obj, {}, "last", function (new_node) {
@@ -124,6 +139,7 @@ $(document).ready(function () {
                     setTimeout(function () { inst.edit(new_node); },0);
                 }
             });
+            */
 
         }
     });
@@ -189,4 +205,49 @@ $(document).ready(function () {
             inst.delete_node(obj);
         }
     });
+    
+    function create_node(sel_id, name, category) {
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+        post_data.se_userid = se_userid;
+        post_data.name = name;
+        post_data.category = category;
+        post_data.parent = sel_id;
+        $.ajax({
+            url: '/mis/v1/api/question/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    var inst = $.jstree.reference(sel_id);
+                    var obj = inst.get_node(sel_id);
+                    inst.create_node(obj, {}, "last", function (new_node) {
+                        try {
+                            new_node.text=name;
+                            new_node.icon="glyphicon glyphicon-question-sign";
+                            new_node.category="1";
+                            inst.edit(new_node);
+                            console.log('create question finish');
+                        } catch (ex) {
+                            setTimeout(function () { inst.edit(new_node); },0);
+                        }
+                    });
+                    var ref = $('#container').jstree(true);
+                    ref.refresh();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    }
 });
