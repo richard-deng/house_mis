@@ -46,3 +46,7 @@ class UserList(core.Handler):
 class TestSummerNote(core.Handler):
     def GET(self):
         self.write(template.render('test_summernote.html'))
+
+class QuestionList(core.Handler):
+    def GET(self):
+        self.write(template.render('questions.html'))
