@@ -198,7 +198,9 @@ $(document).ready(function () {
          */
         var content = window.prompt('请输入修改的内容');
         if(content){
-            ref.set_text(sel, content);
+            //ref.set_text(sel, content);
+            var question_id = sel[0];
+            update_node(question_id, content);
         }
     });
 
@@ -207,6 +209,8 @@ $(document).ready(function () {
         var sel = ref.get_selected();
         console.log('selected ', sel);
         var sel_id = sel[0];
+        disable_node(sel_id, 1);
+        /*
         var inst = $.jstree.reference(sel_id);
         var obj = inst.get_node(sel_id);
         if(inst.is_selected(obj)) {
@@ -215,6 +219,7 @@ $(document).ready(function () {
         else {
             inst.delete_node(obj);
         }
+        */
     });
     
     function create_node(sel_id, name, category) {
@@ -252,6 +257,70 @@ $(document).ready(function () {
                             setTimeout(function () { inst.edit(new_node); },0);
                         }
                     });
+                    var ref = $('#container').jstree(true);
+                    ref.refresh();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    }
+
+    function update_node(question_id, name) {
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+        post_data.se_userid = se_userid;
+        post_data.name = name;
+        post_data.question_id = question_id;
+        $.ajax({
+            url: '/mis/v1/api/question/update',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    //ref.set_text(sel, content);
+                    var ref = $('#container').jstree(true);
+                    ref.refresh();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    }
+
+    function disable_node(question_id, status) {
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+        post_data.se_userid = se_userid;
+        post_data.status = status;
+        post_data.question_id = question_id;
+
+        $.ajax({
+            url: '/mis/v1/api/question/update',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
                     var ref = $('#container').jstree(true);
                     ref.refresh();
                 }

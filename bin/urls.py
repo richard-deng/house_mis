@@ -41,6 +41,7 @@ urls = (
     # 问答
     ('^/mis/v1/api/question/list$', questions.QuestionsListHandler),
     ('^/mis/v1/api/question/create$', questions.QuestionAddHandler),
+    ('^/mis/v1/api/question/update$', questions.QuestionUpdateHandler),
 
     # 页面
     ('^/$', page.Root),
