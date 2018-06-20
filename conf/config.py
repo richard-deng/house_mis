@@ -23,7 +23,7 @@ database = {
         'host': '127.0.0.1',
         'user': 'xuncheng',
         'port': 3306,
-        'conn': 3
+        'conn': 15
     },
 
 }
