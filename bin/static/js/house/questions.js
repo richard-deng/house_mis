@@ -40,7 +40,8 @@ $(document).ready(function () {
                 "dataType": "json"
             }
         },
-        "plugins" : ["dnd", "contextmenu", "changed", "types"],
+        //"plugins" : ["dnd", "contextmenu", "changed", "types"],
+        "plugins" : ["changed", "types"],
         "contextmenu":{
             "items":{
                 "新建问题":{
@@ -111,6 +112,15 @@ $(document).ready(function () {
         var instance = $('#container').jstree(true);
         instance.deselect_all();
         instance.select_node('-1');
+    });
+
+    $('#do_add_root_question').click(function () {
+        var root_question = window.prompt('请输入根问题');
+        if(root_question){
+            var root_id = -1;
+            create_node(root_id, root_question, 1);
+            window.location.reload();
+        }
     });
 
     $('#do_add_question').click(function(){
@@ -221,7 +231,7 @@ $(document).ready(function () {
         }
         */
     });
-    
+
     function create_node(sel_id, name, category) {
         var post_data = {};
         var se_userid = window.localStorage.getItem('myid');

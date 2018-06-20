@@ -26,7 +26,7 @@ class QuestionsListHandler(BaseHandler):
     def _get_handler(self):
         ret = []
         data = Questions.load_all()
-        ret.append(data)
+        ret.extend(data)
         return json.dumps(ret)
 
 class QuestionAddHandler(BaseHandler):
