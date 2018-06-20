@@ -17,7 +17,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         self.port = 8083
         self.timeout = 2000
 
-        self.headers = {'sessionid': '8b71a4df-ca0c-4037-bdf9-a03d77fe7666'}
+        self.headers = {'sessionid': '25d5b5c2-fba9-4f74-b191-044efc402e27'}
         self.cookie = self.headers
         self.server = [
             {
@@ -75,7 +75,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
-    # @unittest.skip("skipping")
+    @unittest.skip("skipping")
     def test_user_create(self):
         self.url = '/mis/v1/api/user/create'
         self.send.update({
@@ -91,6 +91,13 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
+    # @unittest.skip("skipping")
+    def test_question_list(self):
+        self.url = '/mis/v1/api/question/list'
+        ret = self.client.get(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestHouseMisInstrument)
