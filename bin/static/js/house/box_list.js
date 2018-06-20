@@ -412,6 +412,8 @@ $(document).ready(function(){
             $("label.error").remove();
             $("#text_icon_url_add").attr('src', '').hide();
             $('#text_add').text(box_id);
+            $('#summernote').summernote('code', '');
+            $('#article_content').html('');
             $('#textCreateModal').modal();
         }
     });
