@@ -40,7 +40,8 @@ $(document).ready(function () {
                 "dataType": "json"
             }
         },
-        "plugins" : ["dnd", "contextmenu", "changed", "types"],
+        //"plugins" : ["dnd", "contextmenu", "changed", "types"],
+        "plugins" : ["changed", "types"],
         "contextmenu":{
             "items":{
                 "新建问题":{
