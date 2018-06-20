@@ -83,7 +83,7 @@ $(document).ready(function () {
 
             },
             {
-                targets: 4,
+                targets: 3,
                 render: function (data, type, full) {
                     if (data === 1) {
                         return '启用'
@@ -93,7 +93,7 @@ $(document).ready(function () {
                 }
             },
             {
-                targets: 7,
+                targets: 6,
                 data: '操作',
                 render: function(data, type, full) {
                     var text_id = full.id;
@@ -106,7 +106,7 @@ $(document).ready(function () {
             { data: 'box_name'},
             { data: 'name'},
             { data: 'icon'},
-            { data: 'content'},
+            //{ data: 'content'},
             { data: 'available'},
             { data: 'ctime'},
             { data: 'utime'}
@@ -156,7 +156,8 @@ $(document).ready(function () {
                     text_data = data.data;
 
                     $('#text_name_view').val(text_data.name);
-                    $('#text_content_view').val(text_data.content);
+                    //$('#text_content_view').val(text_data.content);
+                    $('#summernote').summernote('code', text_data.content);
                     $('#text_available_view').val(text_data.available);
                     $("#text_icon_url_view").attr('src', text_data.icon).show();
                     $('#text_icon_name_view').text(text_data.icon_name);
@@ -217,7 +218,8 @@ $(document).ready(function () {
         post_data.se_userid = se_userid;
         post_data.text_id = $('#text_view').text();
         post_data.name = $("#text_name_view").val();
-        post_data.content = $('#text_content_view').val();
+        //post_data.content = $('#text_content_view').val();
+        post_data.content = $('#summernote').summernote('code');
         post_data.available = $('#text_available_view').val();
         post_data.icon = $('#text_icon_name_view').text();
 
@@ -276,6 +278,64 @@ $(document).ready(function () {
         }
         $('#textList').DataTable().draw();
     });
+
+    $('#summernote').summernote({
+        minHeight: 320,
+        maxHeight: 320,
+        minWidth: 512,
+        maxWidth: 512,
+        focus: true,
+        lang: 'zh-CN',
+        dialogsInBody: true,
+        /*
+         toolbar: [
+         // [groupName, [list of button]]
+         ['style', ['bold', 'italic', 'underline', 'clear']],
+         ['font', ['strikethrough', 'superscript', 'subscript']],
+         ['fontsize', ['fontsize']],
+         ['color', ['color']],
+         ['insert', ['picture', 'link']],
+         ['para', ['ul', 'ol', 'paragraph']],
+         ['height', ['height']]
+         ],
+         */
+
+        callbacks: {
+            onImageUpload: function(files) {
+                //由于summernote上传图片上传的是二进制数据
+                //所以这里可以自己重新上传图片方法
+                var formData = new FormData();
+                var name = files[0]['name'];
+                console.log('name:', name);
+                formData.append('file',files[0]);
+                formData.append("name", name);
+                $.ajax({
+                    url : '/mis/v1/api/icon/upload', //后台文件上传接口
+                    type : 'POST',
+                    data : formData,
+                    processData : false,
+                    contentType : false,
+                    success : function(data) {
+                        console.log('data:', data);
+                        detail_data = data.data;
+                        src = detail_data.icon_url;
+                        //设置到编辑器中
+                        $('#summernote').summernote('insertImage',src,'img');
+                    },
+                    error:function(){
+                        alert("上传失败...");
+                    }
+                });
+            }
+        }
+    });
+
+    $('#summernote').on('summernote.change', function(we, contents, $editable) {
+        var content = $('#summernote').summernote('code');
+        $('#article_content').html(content);
+        $('#article_content').show();
+    });
+
 });
 
 function upload_text_icon_view(obj) {
