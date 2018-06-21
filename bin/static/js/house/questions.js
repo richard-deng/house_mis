@@ -399,6 +399,60 @@ $(document).ready(function () {
         */
     });
 
+    $('#do_add_desc').click(function () {
+        console.log('add desc');
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
+        var psel = ref.get_parent(sel);
+        var parent = psel[0];
+        console.log('selected ', sel);
+        var sel_id = sel[0];
+        var inst = $.jstree.reference(sel_id);
+        var obj = inst.get_node(sel_id);
+        var category = obj.original.category;
+        console.log('category: ', category);
+        if (category !== 1){
+            //window.alert('答案不能再添加');
+            toastr.warning('只有问题才能添加描述');
+            return;
+        }
+
+        $('#addDescCreateForm').resetForm();
+        $("label.error").remove();
+        $('#addDescModal').modal();
+    });
+
+    $('#descCreateSubmit').click(function () {
+        var desc_vt = $('#addDescCreateForm').validate({
+            rules: {
+                desc_add: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                desc_add: {
+                    required: '请输入描述',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            }
+        });
+
+        var ok = desc_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        var description = $('#desc_add').val();
+        console.log('do add desc');
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
+        console.log('selected ', sel);
+        var sel_id = sel[0];
+        create_node(sel_id, description, 3);
+        $('#addDescModal').modal('hide');
+    });
+
     function create_node(sel_id, name, category) {
         var post_data = {};
         var se_userid = window.localStorage.getItem('myid');
