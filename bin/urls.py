@@ -8,6 +8,7 @@ from handler import (
     order,
     text,
     user,
+    rate,
     questions,
 )
 
@@ -43,6 +44,11 @@ urls = (
     ('^/mis/v1/api/question/create$', questions.QuestionAddHandler),
     ('^/mis/v1/api/question/update$', questions.QuestionUpdateHandler),
 
+    # 利率
+    ('^/mis/v1/api/rate/list$', rate.RateListHandler),
+    ('^/mis/v1/api/rate/create$', rate.RateAddHandler),
+    ('^/mis/v1/api/rate/view$', rate.RateViewHandler),
+
     # 页面
     ('^/$', page.Root),
     ('^/mis/v1/page/login.html$', page.Login),
@@ -51,6 +57,7 @@ urls = (
     ('^/mis/v1/page/order_list.html$', page.OrderList),
     ('^/mis/v1/page/text_list.html$', page.TextList),
     ('^/mis/v1/page/question_list.html$', page.QuestionList),
+    ('^/mis/v1/page/rate_list.html$', page.RateList),
 
     # 测试summernote文件上传
     ('^/mis/v1/page/test_summernote.html$', page.TestSummerNote),
