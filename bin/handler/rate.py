@@ -61,6 +61,10 @@ class RateViewHandler(BaseHandler):
         Field('rate', T_FLOAT, False)
     ]
 
+    _get_handler_fields = [
+        Field('rate_id', T_INT, False)
+    ]
+
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self
     def _post_handler(self):
@@ -68,8 +72,22 @@ class RateViewHandler(BaseHandler):
         params = self.validator.data
         rate_id = params.pop('rate_id')
         rate = RateInfo(rate_id)
+        rate.load()
+        if not rate.data:
+            return error(RESP_CODE.DATAERR)
         ret = rate.update(params)
         if ret != 1:
             return error(RESP_CODE.DATAERR)
         return success(data=data)
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        params = self.validator.data
+        rate_id = params.get('rate_id')
+        rate = RateInfo(rate_id)
+        rate.load()
+        if not rate.data:
+            return error(RESP_CODE.DATAERR)
+        return success(data=rate.data)
 
