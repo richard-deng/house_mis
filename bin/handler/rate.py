@@ -48,6 +48,10 @@ class RateAddHandler(BaseHandler):
     def _post_handler(self):
         data = {}
         params = self.validator.data
+        # 先检查是否有同名的数据存在
+        rate = RateInfo.load_by_name(params.get('name'))
+        if rate.data:
+            return error(RESP_CODE.DATAEXIST)
         ret = RateInfo.create(params)
         if ret != 1:
             return error(RESP_CODE.DATAERR)
