@@ -17,7 +17,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         self.port = 8083
         self.timeout = 2000
 
-        self.headers = {'sessionid': '25d5b5c2-fba9-4f74-b191-044efc402e27'}
+        self.headers = {'sessionid': 'e4462366-31f1-4d1d-aadb-5bb43b95fb60'}
         self.cookie = self.headers
         self.server = [
             {
@@ -91,13 +91,57 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
-    # @unittest.skip("skipping")
+    @unittest.skip("skipping")
     def test_question_list(self):
         self.url = '/mis/v1/api/question/list'
         ret = self.client.get(self.url, self.send, cookies=self.cookie)
         log.info(ret)
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
+
+
+    @unittest.skip("skipping")
+    def test_rate_list(self):
+        self.url = '/mis/v1/api/rate/list'
+        self.send.update({
+            'page': 1,
+            'maxnum': 10
+        })
+        ret = self.client.get(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
+
+    @unittest.skip("skipping")
+    def test_rate_create(self):
+        self.url = '/mis/v1/api/rate/create'
+        self.send.update({
+            'name': 'person loan',
+            'rate': '4.90'
+        })
+        ret = self.client.post(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
+
+    @unittest.skip("skipping")
+    def test_rate_view_get(self):
+        self.url = '/mis/v1/api/rate/view'
+        self.send.update({'rate_id': 1})
+        ret = self.client.get(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
+
+    # @unittest.skip("skipping")
+    def test_rate_view_post(self):
+        self.url = '/mis/v1/api/rate/view'
+        self.send.update({'rate_id': 1, 'rate': 4.32})
+        ret = self.client.post(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
+
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestHouseMisInstrument)

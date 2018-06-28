@@ -115,15 +115,56 @@ $(document).ready(function () {
     });
 
     $('#do_add_root_question').click(function () {
+        $('#addRootQuestionCreateForm').resetForm();
+        $("label.error").remove();
+        $('#addRootQuestionModal').modal();
+        /*
         var root_question = window.prompt('请输入根问题');
         if(root_question){
             var root_id = -1;
             create_node(root_id, root_question, 1);
             window.location.reload();
         }
+        */
+    });
+
+    $('#rootQuestionCreateSubmit').click(function () {
+        var root_question_vt = $('#addRootQuestionCreateForm').validate({
+            rules: {
+                root_question_add: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                root_question_add: {
+                    required: '请输入问题内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = root_question_vt.form();
+        if(!ok){
+            return false;
+        }
+        var root_question = $('#root_question_add').val();
+        if(root_question){
+            var root_id = -1;
+            create_node(root_id, root_question, 1);
+            $('#addRootQuestionModal').modal('hide');
+            window.location.reload();
+        }
     });
 
     $('#do_add_question').click(function(){
+
         console.log('add question');
         var ref = $('#container').jstree(true);
         var sel = ref.get_selected();
@@ -136,33 +177,75 @@ $(document).ready(function () {
         var category = obj.original.category;
         console.log('category: ', category);
         if (category === 2){
-            window.alert('答案不能再添加');
+            //window.alert('答案不能再添加');
+            toastr.warning('答案不能再添加');
             return;
         }
+
+        /*
         var question = window.prompt('请输入问题');
         if(question){
-
             create_node(sel_id, question, 1);
-            /*
-            var inst = $.jstree.reference(sel_id);
-            var obj = inst.get_node(sel_id);
-            inst.create_node(obj, {}, "last", function (new_node) {
-                try {
-                    new_node.text=question;
-                    new_node.icon="glyphicon glyphicon-question-sign";
-                    new_node.category="question";
-                    inst.edit(new_node);
-                    console.log('create question finish');
-                } catch (ex) {
-                    setTimeout(function () { inst.edit(new_node); },0);
-                }
-            });
-            */
+        }
+        */
 
+        $('#addQuestionCreateForm').resetForm();
+        $("label.error").remove();
+        $('#addQuestionModal').modal();
+    });
+
+    $('#questionCreateSubmit').click(function () {
+        var question_vt = $('#addQuestionCreateForm').validate({
+            rules: {
+                question_add: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                question_add: {
+                    required: '请输入问题内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = question_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        console.log('add question');
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
+        var psel = ref.get_parent(sel);
+        var parent = psel[0];
+        console.log('selected ', sel);
+        var sel_id = sel[0];
+        var inst = $.jstree.reference(sel_id);
+        var obj = inst.get_node(sel_id);
+        var category = obj.original.category;
+        console.log('category: ', category);
+        if (category === 2){
+            //window.alert('答案不能再添加');
+            toastr.warning('答案不能再添加');
+            return;
+        }
+        var question = $('#question_add').val();
+        if(question){
+            create_node(sel_id, question, 1);
+            $('#addQuestionModal').modal('hide');
         }
     });
 
     $('#do_add_answer').click(function(){
+
         console.log('add answer');
         var ref = $('#container').jstree(true);
         var sel = ref.get_selected();
@@ -173,44 +256,128 @@ $(document).ready(function () {
         var category = obj.original.category;
         console.log('category: ', category);
         if (category === 2){
-            window.alert('答案不能再添加');
+            //window.alert('答案不能再添加');
+            toastr.warning('答案不能再添加');
             return;
         }
+
+        $('#addAnswerCreateForm').resetForm();
+        $("label.error").remove();
+        $('#addAnswerModal').modal();
+
+        /*
         var answer = window.prompt('请输入答案');
         if(answer){
             create_node(sel_id, answer, 2);
-            /*
-            inst.create_node(obj, {}, "last", function (new_node) {
-                try {
-                    new_node.text=answer;
-                    new_node.icon="glyphicon glyphicon-info-sign";
-                    new_node.category="answer";
-                    inst.edit(new_node);
-                    console.log('create answer finish');
-                } catch (ex) {
-                    setTimeout(function () { inst.edit(new_node); },0);
+        }
+        */
+    });
+
+    $('#answerCreateSubmit').click(function () {
+
+        var answer_vt = $('#addAnswerCreateForm').validate({
+            rules: {
+                answer_add: {
+                    required: true,
+                    maxlength: 100
                 }
-            });
-            */
+            },
+            messages: {
+                answer_add: {
+                    required: '请输入答案',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = answer_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        var answer = $('#answer_add').val();
+
+        console.log('add answer');
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
+        console.log('selected ', sel);
+        var sel_id = sel[0];
+        var inst = $.jstree.reference(sel_id);
+        var obj = inst.get_node(sel_id);
+        var category = obj.original.category;
+        console.log('category: ', category);
+        if (category === 2){
+            //window.alert('答案不能再添加');
+            toastr.warning('答案不能再添加');
+            return;
+        }
+        if(answer){
+            create_node(sel_id, answer, 2);
+            $('#addAnswerModal').modal('hide');
         }
     });
 
     $('#do_rename').click(function(){
+
+        /*
         console.log('rename');
         var ref = $('#container').jstree(true);
         var sel = ref.get_selected();
         console.log('selected ', sel);
-        /*
-         var sel_id = sel[0];
-         var inst = $.jstree.reference(sel_id),
-         obj = inst.get_node(sel_id);
-         inst.edit(obj);
-         */
         var content = window.prompt('请输入修改的内容');
         if(content){
-            //ref.set_text(sel, content);
             var question_id = sel[0];
             update_node(question_id, content);
+        }
+        */
+
+        $('#renameForm').resetForm();
+        $("label.error").remove();
+        $('#renameModal').modal();
+
+    });
+
+    $('#renameSubmit').click(function () {
+        var rename_content_vt = $('#renameForm').validate({
+            rules: {
+                rename: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                rename: {
+                    required: '请输入修改内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = rename_content_vt.form();
+        if(!ok){
+            return false;
+        }
+        var content = $('#rename').val();
+        console.log('rename');
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
+        console.log('selected ', sel);
+        if(content){
+            var question_id = sel[0];
+            update_node(question_id, content);
+            $('#renameModal').modal('hide');
         }
     });
 
@@ -230,6 +397,60 @@ $(document).ready(function () {
             inst.delete_node(obj);
         }
         */
+    });
+
+    $('#do_add_desc').click(function () {
+        console.log('add desc');
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
+        var psel = ref.get_parent(sel);
+        var parent = psel[0];
+        console.log('selected ', sel);
+        var sel_id = sel[0];
+        var inst = $.jstree.reference(sel_id);
+        var obj = inst.get_node(sel_id);
+        var category = obj.original.category;
+        console.log('category: ', category);
+        if (category !== 1){
+            //window.alert('答案不能再添加');
+            toastr.warning('只有问题才能添加描述');
+            return;
+        }
+
+        $('#addDescCreateForm').resetForm();
+        $("label.error").remove();
+        $('#addDescModal').modal();
+    });
+
+    $('#descCreateSubmit').click(function () {
+        var desc_vt = $('#addDescCreateForm').validate({
+            rules: {
+                desc_add: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                desc_add: {
+                    required: '请输入描述',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            }
+        });
+
+        var ok = desc_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        var description = $('#desc_add').val();
+        console.log('do add desc');
+        var ref = $('#container').jstree(true);
+        var sel = ref.get_selected();
+        console.log('selected ', sel);
+        var sel_id = sel[0];
+        create_node(sel_id, description, 3);
+        $('#addDescModal').modal('hide');
     });
 
     function create_node(sel_id, name, category) {
