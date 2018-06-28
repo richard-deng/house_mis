@@ -153,14 +153,14 @@ $(document).ready(function () {
                     return false;
                 }
                 else {
-                    text_data = data.data;
+                    rate_data = data.data;
 
-                    $('#text_name_view').val(text_data.name);
-                    //$('#text_content_view').val(text_data.content);
-                    $('#summernote').summernote('code', text_data.content);
-                    $('#text_available_view').val(text_data.available);
-                    $("#text_icon_url_view").attr('src', text_data.icon).show();
-                    $('#text_icon_name_view').text(text_data.icon_name);
+                    $('#text_name_view').val(rate_data.name);
+                    //$('#text_content_view').val(rate_data.content);
+                    $('#summernote').summernote('code', rate_data.content);
+                    $('#text_available_view').val(rate_data.available);
+                    $("#text_icon_url_view").attr('src', rate_data.icon).show();
+                    $('#text_icon_name_view').text(rate_data.icon_name);
                     $('#textViewModal').modal();
                 }
             },

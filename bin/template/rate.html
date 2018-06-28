@@ -26,6 +26,7 @@
                         </div>
 
                         <button type="button" class="btn btn-primary" id="rate_search">搜索</button>
+                        <button type="button" class="btn btn-default" id="rate_add">添加</button>
                     </form>
                     <label id="query_label_error"></label>
                 </div>
@@ -35,7 +36,7 @@
                         <thead>
                         <tr>
                             <th>利率名称</th>
-                            <th>利率</th>
+                            <th>利率%</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
                             <th>操作</th>
@@ -49,6 +50,75 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="rateViewModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">查看</h4><span id="view_rate_id" hidden></span>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="rateViewForm" role="form">
+                    <div class="form-group">
+                        <label for="name_view" class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="name_view" name="name_view" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rate_view" class="col-sm-2 control-label">利率</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="rate_view" name="rate_view">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="rateViewSubmit">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="rateCreateModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="rateCreateForm" role="form">
+
+                    <div class="form-group">
+                        <label for="name_create" class="col-sm-2 control-label">名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="name_create" name="name_create">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rate_create" class="col-sm-2 control-label">利率</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="rate_create" name="rate_create">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="rateCreateSubmit">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 </%block>

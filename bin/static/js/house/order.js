@@ -142,13 +142,13 @@ $(document).ready(function () {
                     return false;
                 }
                 else {
-                    text_data = data.data;
+                    rate_data = data.data;
 
-                    $('#goods_name_view').val(text_data.goods_name);
-                    $('#goods_price_view').val(text_data.goods_price);
-                    $('#goods_desc_view').val(text_data.goods_desc);
-                    $("#goods_picture_url_view").attr('src', text_data.goods_picture).show();
-                    $('#goods_picture_name_view').text(text_data.goods_picture_name);
+                    $('#goods_name_view').val(rate_data.goods_name);
+                    $('#goods_price_view').val(rate_data.goods_price);
+                    $('#goods_desc_view').val(rate_data.goods_desc);
+                    $("#goods_picture_url_view").attr('src', rate_data.goods_picture).show();
+                    $('#goods_picture_name_view').text(rate_data.goods_picture_name);
                     $('#orderViewModal').modal();
                 }
             },
