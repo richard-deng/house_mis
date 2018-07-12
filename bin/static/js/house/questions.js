@@ -133,7 +133,7 @@ $(document).ready(function () {
             rules: {
                 root_question_add: {
                     required: true,
-                    maxlength: 100
+                    maxlength: 200
                 }
             },
             messages: {
@@ -199,7 +199,7 @@ $(document).ready(function () {
             rules: {
                 question_add: {
                     required: true,
-                    maxlength: 100
+                    maxlength: 200
                 }
             },
             messages: {
@@ -279,7 +279,7 @@ $(document).ready(function () {
             rules: {
                 answer_add: {
                     required: true,
-                    maxlength: 100
+                    maxlength: 200
                 }
             },
             messages: {
@@ -348,7 +348,7 @@ $(document).ready(function () {
             rules: {
                 rename: {
                     required: true,
-                    maxlength: 100
+                    maxlength: 200
                 }
             },
             messages: {
@@ -427,7 +427,7 @@ $(document).ready(function () {
             rules: {
                 desc_add: {
                     required: true,
-                    maxlength: 100
+                    maxlength: 200
                 }
             },
             messages: {
