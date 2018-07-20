@@ -594,25 +594,22 @@ $(document).ready(function(){
 
     $('#summernote').summernote({
         minHeight: 320,
-        maxHeight: 320,
+        // maxHeight: 320,
         minWidth: 512,
-        maxWidth: 512,
+        // maxWidth: 512,
         focus: true,
         lang: 'zh-CN',
         dialogsInBody: true,
-        /*
-         toolbar: [
-         // [groupName, [list of button]]
-         ['style', ['bold', 'italic', 'underline', 'clear']],
-         ['font', ['strikethrough', 'superscript', 'subscript']],
-         ['fontsize', ['fontsize']],
-         ['color', ['color']],
-         ['insert', ['picture', 'link']],
-         ['para', ['ul', 'ol', 'paragraph']],
-         ['height', ['height']]
-         ],
-         */
-
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['insert', ['picture', 'link']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ],
         callbacks: {
             onImageUpload: function(files) {
                 //由于summernote上传图片上传的是二进制数据
