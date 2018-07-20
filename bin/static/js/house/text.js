@@ -281,9 +281,9 @@ $(document).ready(function () {
 
     $('#summernote').summernote({
         minHeight: 320,
-        maxHeight: 320,
+        // maxHeight: 320,
         minWidth: 512,
-        maxWidth: 512,
+        // maxWidth: 512,
         focus: true,
         lang: 'zh-CN',
         dialogsInBody: true,
