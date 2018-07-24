@@ -39,6 +39,7 @@ class BoxListHandler(BaseHandler):
         if info:
             for item in info:
                 item['id'] = str(item['id'])
+                item['parent'] = str(item['parent'])
                 icon_name = item['icon']
                 item['icon'] = BASE_URL + icon_name
                 item['icon_name'] = icon_name

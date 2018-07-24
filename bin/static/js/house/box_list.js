@@ -135,10 +135,19 @@ $(document).ready(function(){
                     var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-box_id="+box_id+">"+'编辑'+"</button>";
                     var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+" data-parent="+parent+">"+box_type_name+"</button>";
                     var next = "<button type='button' class='btn btn-info btn-sm viewNext' data-box_id=" + box_id + ">"+'查看盒子'+"</button>";
-                    if(box_type === 2){
-                        return view + box + next;
+                    var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-box_id=" + box_id + ">"+'上一层'+"</button>";
+                    if(parent == -1){
+                        if(box_type === 2){
+                            return view + box + next;
+                        } else {
+                            return view + box;
+                        }
                     } else {
-                        return view + box;
+                        if(box_type === 2){
+                            return view + box + next + up;
+                        } else {
+                            return view + box + up;
+                        }
                     }
                 }
             }
@@ -241,7 +250,16 @@ $(document).ready(function(){
 
     $(document).on('click', '.viewNext', function () {
         var box_id = $(this).data('box_id');
+        var current_parent = $('#box_parent').text();
+        $('#up_parent').text(current_parent);
         $('#box_parent').text(box_id);
+        $('#box_name').val('');
+        $('#boxList').DataTable().draw();
+    });
+
+    $(document).on('click', '.viewUp', function () {
+        var up_parent = $('#up_parent').text();
+        $('#box_parent').text(up_parent);
         $('#box_name').val('');
         $('#boxList').DataTable().draw();
     });
