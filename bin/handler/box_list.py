@@ -25,6 +25,7 @@ class BoxListHandler(BaseHandler):
         Field('page', T_INT, False),
         Field('maxnum', T_INT, False),
         Field('name', T_STR, True),
+        Field('parent', T_INT, True),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -73,6 +74,7 @@ class BoxCreateHandler(BaseHandler):
         Field('available', T_INT, False),
         Field('priority', T_INT, False),
         Field('icon', T_STR, False),
+        Field('parent', T_INT, False),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)

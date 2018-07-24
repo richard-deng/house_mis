@@ -85,8 +85,11 @@ $(document).ready(function(){
                 render: function (data, type, full) {
                     if (data === 0) {
                         return '订单';
-                    } else {
+                    }
+                    else if(data === 1){
                         return '文本';
+                    } else {
+                        return '盒子';
                     }
                 }
             },
@@ -113,15 +116,25 @@ $(document).ready(function(){
                 render: function(data, type, full) {
                     var box_id = full.id;
                     var box_type = full.box_type;
+                    var parent = full.parent;
                     var box_type_name = '';
                     if (box_type === 0) {
                         box_type_name = '添加订单';
-                    } else {
+                    }
+                    else if (box_type === 1){
                         box_type_name = '添加文本';
                     }
-                    var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-box_id="+box_id+">"+'查看'+"</button>";
-                    var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+">"+box_type_name+"</button>";
-                    return view + box;
+                    else {
+                        box_type_name = '添加盒子';
+                    }
+                    var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-box_id="+box_id+">"+'编辑'+"</button>";
+                    var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+" data-parent="+parent+">"+box_type_name+"</button>";
+                    var next = "<button type='button' class='btn btn-info btn-sm viewNext' data-box_id=" + box_id + ">"+'查看盒子'+"</button>";
+                    if(box_type === 2){
+                        return view + box + next;
+                    } else {
+                        return view + box;
+                    }
                 }
             }
         ],
@@ -178,7 +191,6 @@ $(document).ready(function(){
         $('#boxList').DataTable().draw();
     });
 
-
     $(document).on('click', '.viewEdit', function(){
         $("label.error").remove();
         var se_userid = window.localStorage.getItem('myid');
@@ -221,7 +233,6 @@ $(document).ready(function(){
         });
 
     });
-
 
     $('#boxViewSubmit').click(function(){
         var box_view_vt = $('#boxViewForm').validate({
@@ -305,7 +316,6 @@ $(document).ready(function(){
 
     });
 
-
     $('#box_create').click(function(){
         $('#boxCreateForm').resetForm();
         $("#box_icon_url_add").attr('src', '').hide();
@@ -366,6 +376,8 @@ $(document).ready(function(){
         post_data.priority = $('#box_priority_add').val();
         post_data.available = $('#box_available_add').val();
         post_data.icon = $("#box_icon_name_add").text();
+        // 顶级创建的父级为-1
+        post_data.parent = -1;
 
         $.ajax({
 	        url: '/mis/v1/api/box/create',
@@ -678,7 +690,6 @@ function upload_file(obj) {
     });
 }
 
-
 function upload_view_file(obj) {
     var se_userid = window.localStorage.getItem('myid');
     var formData = new FormData();
@@ -708,7 +719,6 @@ function upload_view_file(obj) {
         }
     });
 }
-
 
 function upload_goods_picture_file(obj) {
     var se_userid = window.localStorage.getItem('myid');
