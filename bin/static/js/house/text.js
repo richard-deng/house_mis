@@ -287,18 +287,17 @@ $(document).ready(function () {
         focus: true,
         lang: 'zh-CN',
         dialogsInBody: true,
-        /*
-         toolbar: [
-         // [groupName, [list of button]]
-         ['style', ['bold', 'italic', 'underline', 'clear']],
-         ['font', ['strikethrough', 'superscript', 'subscript']],
-         ['fontsize', ['fontsize']],
-         ['color', ['color']],
-         ['insert', ['picture', 'link']],
-         ['para', ['ul', 'ol', 'paragraph']],
-         ['height', ['height']]
-         ],
-         */
+
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['insert', ['picture', 'link']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ],
 
         callbacks: {
             onImageUpload: function(files) {
