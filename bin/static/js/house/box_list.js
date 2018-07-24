@@ -43,11 +43,16 @@ $(document).ready(function(){
             };
 
             var name = $("#box_name").val();
+            var parent = $("#box_parent").text();
 
             if(name){
                 get_data.name = name;
             }
-            
+
+            if(parent){
+                get_data.parent = parent;
+            }
+
             $.ajax({
                 url: '/mis/v1/api/box/list',
                 type: 'GET',
@@ -163,7 +168,7 @@ $(document).ready(function(){
     });
 
     $("#box_search").click(function(){
-
+        $("#box_parent").text(-1);
         var box_query_vt = $('#box_list_query').validate({
             rules: {
                 box_name: {
@@ -232,6 +237,13 @@ $(document).ready(function(){
 	        }
         });
 
+    });
+
+    $(document).on('click', '.viewNext', function () {
+        var box_id = $(this).data('box_id');
+        $('#box_parent').text(box_id);
+        $('#box_name').val('');
+        $('#boxList').DataTable().draw();
     });
 
     $('#boxViewSubmit').click(function(){
@@ -418,7 +430,7 @@ $(document).ready(function(){
             $("#goods_picture_url_add").attr('src', '').hide();
             $('#order_add').text(box_id);
             $('#orderCreateModal').modal();
-        } else {
+        } else if(box_type === 1){
             // 文本
             $('#textCreateForm').resetForm();
             $("label.error").remove();
@@ -427,6 +439,14 @@ $(document).ready(function(){
             $('#summernote').summernote('code', '');
             $('#article_content').html('');
             $('#textCreateModal').modal();
+        } else {
+            // 盒子
+            $('#inlineBoxCreateForm').resetForm();
+            $("label.error").remove();
+            $("#inline_box_icon_url_add").attr('src', '').hide();
+            $("#inline_box_icon_name_add").text('');
+            $("#box_id_add").text(box_id);
+            $('#inlineBoxCreateModal').modal();
         }
     });
 
@@ -658,6 +678,87 @@ $(document).ready(function(){
         $('#article_content').show();
     });
 
+    $('#inlineBoxCreateSubmit').click(function () {
+        var inline_box_create_vt = $('#inlineBoxCreateForm').validate({
+            rules: {
+                inline_box_name_add: {
+                    required: true,
+                    maxlength: 32
+                },
+                inline_box_priority_add: {
+                    required: false,
+                    maxlength: 20,
+                    digits: true
+                }
+            },
+            messages: {
+
+                inline_box_name_add: {
+                    required: '请输入名称',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                },
+                inline_box_priority_add: {
+                    required: '请输入优先级',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串"),
+                    digits: '必须输入整数'
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        var ok = inline_box_create_vt.form();
+        if(!ok){
+            return false;
+        }
+        icon_src = $("#inline_box_icon_url_add")[0].src;
+        if(icon_src === "") {
+            return false;
+        }
+
+        var se_userid = window.localStorage.getItem('myid');
+
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.name = $('#inline_box_name_add').val();
+        post_data.box_type = $('#inline_box_type_add').val();
+        post_data.priority = $('#inline_box_priority_add').val();
+        post_data.available = $('#inline_box_available_add').val();
+        post_data.icon = $("#inline_box_icon_name_add").text();
+        post_data.parent = $("#box_id_add").text();
+
+        $.ajax({
+            url: '/mis/v1/api/box/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    toastr.success('添加成功');
+                    $("#inlineBoxCreateForm").resetForm();
+                    $("#inlineBoxCreateModal").modal('hide');
+                    $('#boxList').DataTable().draw();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    });
+
 });
 
 function upload_file(obj) {
@@ -773,6 +874,36 @@ function upload_text_icon_file(obj) {
             name = detail_data.icon_name;
             $("#text_icon_url_add").attr('src', src).show();
             $("#text_icon_name_add").text(name);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function upload_inline_create_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#inlineIconCreateUpload").val();
+    formData.append("file", $("#inlineIconCreateUpload")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/icon/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before send ");
+        },
+        success: function (data) {
+            console.log(data);
+            detail_data = data.data;
+            src = detail_data.icon_url;
+            name = detail_data.icon_name;
+            $("#inline_box_icon_url_add").attr('src', src).show();
+            $("#inline_box_icon_name_add").text(name);
         },
         error: function (response) {
             console.log(response);
