@@ -94,7 +94,7 @@ $(document).ready(function(){
                     else if(data === 1){
                         return '文本';
                     } else {
-                        return '盒子';
+                        return '分类';
                     }
                 }
             },
@@ -130,12 +130,12 @@ $(document).ready(function(){
                         box_type_name = '添加文本';
                     }
                     else {
-                        box_type_name = '添加盒子';
+                        box_type_name = '添加';
                     }
                     var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-box_id="+box_id+">"+'编辑'+"</button>";
                     var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+" data-parent="+parent+">"+box_type_name+"</button>";
-                    var next = "<button type='button' class='btn btn-info btn-sm viewNext' data-box_id=" + box_id + ">"+'查看盒子'+"</button>";
-                    var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-box_id=" + box_id + ">"+'上一层'+"</button>";
+                    var next = "<button type='button' class='btn btn-info btn-sm viewNext' data-box_id=" + box_id + ">"+'查看'+"</button>";
+                    var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-box_id=" + box_id + " data-parent="+parent+ ">"+'上一层'+"</button>";
                     if(parent == -1){
                         if(box_type === 2){
                             return view + box + next;
@@ -250,16 +250,14 @@ $(document).ready(function(){
 
     $(document).on('click', '.viewNext', function () {
         var box_id = $(this).data('box_id');
-        var current_parent = $('#box_parent').text();
-        $('#up_parent').text(current_parent);
         $('#box_parent').text(box_id);
         $('#box_name').val('');
         $('#boxList').DataTable().draw();
     });
 
     $(document).on('click', '.viewUp', function () {
-        var up_parent = $('#up_parent').text();
-        $('#box_parent').text(up_parent);
+        var parent = $(this).data('parent');
+        $('#box_parent').text(box_parent);
         $('#box_name').val('');
         $('#boxList').DataTable().draw();
     });
