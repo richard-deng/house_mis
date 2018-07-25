@@ -41,6 +41,7 @@ urls = (
 
     # 问答
     ('^/mis/v1/api/question/list$', questions.QuestionsListHandler),
+    ('^/mis/v1/api/question/new/list$', questions.QuestionsNewListHandler),
     ('^/mis/v1/api/question/create$', questions.QuestionAddHandler),
     ('^/mis/v1/api/question/update$', questions.QuestionUpdateHandler),
 
@@ -57,6 +58,7 @@ urls = (
     ('^/mis/v1/page/order_list.html$', page.OrderList),
     ('^/mis/v1/page/text_list.html$', page.TextList),
     ('^/mis/v1/page/question_list.html$', page.QuestionList),
+    ('^/mis/v1/page/question/new/list.html$', page.QuestionNewList),
     ('^/mis/v1/page/rate_list.html$', page.RateList),
 
     # 测试summernote文件上传

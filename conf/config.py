@@ -73,7 +73,7 @@ ALLOW_LOGIN_MOBILE = ['13802438716', '13802438717']
 #允许添加用户的账号
 ALLOW_ADD_USER_ID = [1]
 #cookie 配置
-cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'192.168.0.155', 'path':'/mis'}
+cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'127.0.0.1', 'path':'/mis'}
 # cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'120.27.15.131', 'path':'/mis'}
 # 上传的文件存放位置
 # SAVE_PATH = '/home/qfpay/house/house_mis/bin/static/upload/icon/'

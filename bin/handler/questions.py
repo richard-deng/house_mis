@@ -9,6 +9,7 @@ from house_base.base_handler import BaseHandler
 from house_base.questions import Questions
 from house_base.response import success, error, RESP_CODE
 from house_base.session import house_check_session
+from house_base import define
 import tools
 
 from zbase.web.validator import (
@@ -28,6 +29,7 @@ class QuestionsListHandler(BaseHandler):
         data = Questions.load_all()
         ret.extend(data)
         return json.dumps(ret)
+
 
 class QuestionAddHandler(BaseHandler):
 
@@ -74,4 +76,32 @@ class QuestionUpdateHandler(BaseHandler):
         values['utime'] = tools.gen_now_str()
         question = Questions(question_id)
         ret = question.update(values)
+        return success(data=data)
+
+
+class QuestionsNewListHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('page', T_INT, False),
+        Field('maxnum', T_INT, False),
+        Field('name', T_STR, True),
+        Field('parent', T_INT, True),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        data = {}
+
+        params = self.validator.data
+        info, num = Questions.page(**params)
+        data['num'] = num
+        if info:
+            for item in info:
+                item['id'] = str(item['id'])
+                item['parent'] = str(item['parent'])
+                item['ctime'] = tools.trans_datetime(item['ctime'])
+                item['utime'] = tools.trans_datetime(item['utime'])
+                item['category_desc'] = define.QUESTION_MAP[item['category']]
+        data['info'] = info
         return success(data=data)
