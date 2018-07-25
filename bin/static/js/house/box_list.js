@@ -122,6 +122,7 @@ $(document).ready(function(){
                     var box_id = full.id;
                     var box_type = full.box_type;
                     var parent = full.parent;
+                    var parent_parent = full.parent_parent;
                     var box_type_name = '';
                     if (box_type === 0) {
                         box_type_name = '添加订单';
@@ -133,9 +134,9 @@ $(document).ready(function(){
                         box_type_name = '添加';
                     }
                     var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-box_id="+box_id+">"+'编辑'+"</button>";
-                    var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+" data-parent="+parent+">"+box_type_name+"</button>";
+                    var box ="<button type='button' class='btn btn-primary btn-sm addBox' data-box_id="+box_id+" data-box_type="+box_type+" data-parent_parent="+parent_parent+">"+box_type_name+"</button>";
                     var next = "<button type='button' class='btn btn-info btn-sm viewNext' data-box_id=" + box_id + ">"+'查看'+"</button>";
-                    var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-box_id=" + box_id + " data-parent="+parent+ ">"+'上一层'+"</button>";
+                    var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-box_id=" + box_id + " data-parent_parent="+parent_parent+ ">"+'上一层'+"</button>";
                     if(parent == -1){
                         if(box_type === 2){
                             return view + box + next;
@@ -256,8 +257,8 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '.viewUp', function () {
-        var parent = $(this).data('parent');
-        $('#box_parent').text(box_parent);
+        var parent_parent = $(this).data('parent_parent');
+        $('#box_parent').text(parent_parent);
         $('#box_name').val('');
         $('#boxList').DataTable().draw();
     });
