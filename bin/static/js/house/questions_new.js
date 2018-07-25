@@ -86,11 +86,17 @@ $(document).ready(function () {
                     var question_id = full.id;
                     var category = full.category;
                     var parent = full.parent;
+                    var parent_parent = full.parent_parent;
                     var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-question_id="+question_id+">"+'编辑'+"</button>";
                     var next ="<button type='button' class='btn btn-info btn-sm viewNext' data-current_id="+question_id+">"+'详情'+"</button>";
+                    var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-parent_parent=" + parent_parent + ">"+'上一层'+"</button>";
                     var add_answer ="<button type='button' class='btn btn-primary btn-sm addAnswer' data-parent_id="+question_id+">"+'添加答案'+"</button>";
                     if(category != 2) {
-                        return view + next +add_answer;
+                        if(parent != -1){
+                            return view + next + up +add_answer;
+                        } else {
+                            return view + next  +add_answer;
+                        }
                     } else {
                         return view;
                     }
@@ -266,6 +272,13 @@ $(document).ready(function () {
         var current_id = $(this).data('current_id');
         $("#question_name").val('');
         $("#question_parent").text(current_id);
+        $('#questionList').DataTable().draw();
+    });
+
+    $(document).on('click', '.viewUp', function(){
+        var parent_parent = $(this).data('parent_parent');
+        $("#question_name").val('');
+        $("#question_parent").text(parent_parent);
         $('#questionList').DataTable().draw();
     });
 
