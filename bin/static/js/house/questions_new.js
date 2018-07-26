@@ -91,14 +91,18 @@ $(document).ready(function () {
                     var next ="<button type='button' class='btn btn-info btn-sm viewNext' data-current_id="+question_id+">"+'详情'+"</button>";
                     var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-parent_parent=" + parent_parent + ">"+'上一层'+"</button>";
                     var add_answer ="<button type='button' class='btn btn-primary btn-sm addAnswer' data-parent_id="+question_id+">"+'添加答案'+"</button>";
+                    var add_desc ="<button type='button' class='btn btn-primary btn-sm addDesc' data-current_id="+question_id+">"+'添加描述'+"</button>";
+                    var add_question ="<button type='button' class='btn btn-primary btn-sm addQuestion' data-current_id="+question_id+">"+'添加问题'+"</button>";
                     if(category != 2) {
+                        // 非答案
                         if(parent != -1){
-                            return view + next + up +add_answer;
+                            return view + next + up +add_answer + add_desc + add_question;
                         } else {
-                            return view + next  +add_answer;
+                            return view + next  +add_answer + add_desc + add_question;
                         }
                     } else {
-                        return view;
+                        // 答案
+                        return view + up;
                     }
                 }
             }
@@ -193,11 +197,41 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.viewEdit', function(){
-        var question_id = $(this).data('question_id');
-        $("#rename_question_id").text(question_id);
         $("#renameForm").resetForm();
         $("label.error").remove();
-        $("#renameModal").modal();
+        var question_id = $(this).data('question_id');
+        $("#rename_question_id").text(question_id);
+
+        var get_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+        get_data.se_userid = se_userid;
+        get_data.question_id = question_id;
+        $.ajax({
+            url: '/mis/v1/api/question/update',
+            type: 'GET',
+            dataType: 'json',
+            data: get_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    var question = data.data;
+                    $("#rename").val(question.name);
+                    $("#renameModal").modal();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
+
     });
 
     $('#renameSubmit').click(function () {
@@ -280,6 +314,205 @@ $(document).ready(function () {
         $("#question_name").val('');
         $("#question_parent").text(parent_parent);
         $('#questionList').DataTable().draw();
+    });
+
+    $(document).on('click', '.addDesc', function () {
+        var current_id = $(this).data('current_id');
+        $("#desc_parent").text(current_id);
+        $("#addDescCreateForm").resetForm();
+        $("label.error").remove();
+        $("#addDescModal").modal();
+    });
+
+    $('#descCreateSubmit').click(function () {
+        var desc_vt = $('#addDescCreateForm').validate({
+            rules: {
+                desc_add: {
+                    required: true,
+                    maxlength: 200
+                }
+            },
+            messages: {
+                desc_add: {
+                    required: '请输入描述',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            }
+        });
+
+        var ok = desc_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        var description = $('#desc_add').val();
+        var parent = $('#desc_parent').text();
+
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+
+        post_data.se_userid = se_userid;
+        post_data.name = description;
+        post_data.category = 3;
+        post_data.parent = parent;
+
+        $.ajax({
+            url: '/mis/v1/api/question/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    $('#addDescModal').modal('hide');
+                    $('#questionList').DataTable().draw();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    });
+
+    $(document).on('click', '.addQuestion', function () {
+        var parent = $(this).data('current_id');
+        $("#normal_question_parent").text(parent);
+        $("#addQuestionCreateForm").resetForm();
+        $("label.error").remove();
+        $("#addQuestionModal").modal();
+    });
+
+    $('#questionCreateSubmit').click(function () {
+        var question_vt = $('#addQuestionCreateForm').validate({
+            rules: {
+                question_add: {
+                    required: true,
+                    maxlength: 200
+                }
+            },
+            messages: {
+                question_add: {
+                    required: '请输入问题内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = question_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        var parent = $('#normal_question_parent').text();
+        var question = $('#question_add').val();
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+
+        post_data.se_userid = se_userid;
+        post_data.name = question;
+        post_data.category = 1;
+        post_data.parent = parent;
+
+        $.ajax({
+            url: '/mis/v1/api/question/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    $("#addQuestionModal").modal('hide');
+                    $('#questionList').DataTable().draw();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    });
+
+    $('#answerCreateSubmit').click(function () {
+
+        var answer_vt = $('#addAnswerCreateForm').validate({
+            rules: {
+                answer_add: {
+                    required: true,
+                    maxlength: 200
+                }
+            },
+            messages: {
+                answer_add: {
+                    required: '请输入答案',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = answer_vt.form();
+        if(!ok){
+            return false;
+        }
+
+        var answer = $('#answer_add').val();
+        var parent = $('#answer_parent').text();
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+
+        post_data.se_userid = se_userid;
+        post_data.name = answer;
+        post_data.category = 2;
+        post_data.parent = parent;
+
+        $.ajax({
+            url: '/mis/v1/api/question/create',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    $("#addAnswerModal").modal('hide');
+                    $('#questionList').DataTable().draw();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+
     });
 
 });

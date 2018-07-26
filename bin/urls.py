@@ -43,7 +43,7 @@ urls = (
     ('^/mis/v1/api/question/list$', questions.QuestionsListHandler),
     ('^/mis/v1/api/question/new/list$', questions.QuestionsNewListHandler),
     ('^/mis/v1/api/question/create$', questions.QuestionAddHandler),
-    ('^/mis/v1/api/question/update$', questions.QuestionUpdateHandler),
+    ('^/mis/v1/api/question/update$', questions.QuestionViewHandler),
 
     # 利率
     ('^/mis/v1/api/rate/list$', rate.RateListHandler),

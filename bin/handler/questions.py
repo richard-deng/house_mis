@@ -52,13 +52,27 @@ class QuestionAddHandler(BaseHandler):
         return success(data=data)
 
 
-class QuestionUpdateHandler(BaseHandler):
+class QuestionViewHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('question_id', T_INT, False),
+    ]
 
     _post_handler_fields = [
         Field('name', T_STR, True),
         Field('status', T_INT, True),
         Field('question_id', T_INT, False),
     ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        params = self.validator.data
+        question_id = params.get('question_id')
+        question = Questions(question_id)
+        question.load()
+        return success(data=question.data)
+
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self

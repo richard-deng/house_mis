@@ -82,6 +82,32 @@
     </div>
 </div>
 
+
+<div class="modal fade" tabindex="-1" role="dialog" id="addQuestionModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加问题</h4><span id="normal_question_parent" hidden></span>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="addQuestionCreateForm" role="form">
+                    <div class="form-group">
+                        <label for="question_add" class="col-sm-2 control-label">问题</label>
+                        <div class="col-sm-10">
+                            <textarea rows="10" cols="30" class="form-control" id="question_add" name="question_add" placeholder="必填"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="questionCreateSubmit">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" tabindex="-1" role="dialog" id="renameModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -127,6 +153,31 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" id="answerCreateSubmit">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="addDescModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加描述</h4><span id="desc_parent" hidden></span>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="addDescCreateForm" role="form">
+                    <div class="form-group">
+                        <label for="desc_add" class="col-sm-2 control-label">描述</label>
+                        <div class="col-sm-10">
+                            <textarea rows="10" cols="30" class="form-control" id="desc_add" name="desc_add" placeholder="必填"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="descCreateSubmit">提交</button>
             </div>
         </div>
     </div>
