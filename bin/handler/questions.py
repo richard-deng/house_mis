@@ -116,6 +116,7 @@ class QuestionsNewListHandler(BaseHandler):
                 item['parent'] = str(item['parent'])
                 item['ctime'] = tools.trans_datetime(item['ctime'])
                 item['utime'] = tools.trans_datetime(item['utime'])
+                item['status_desc'] = define.QUESTION_STATUS[item['status']]
                 item['category_desc'] = define.QUESTION_MAP[item['category']]
                 if item['parent'] != -1:
                     question = Questions(item['id'])

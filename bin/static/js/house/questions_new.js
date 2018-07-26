@@ -80,29 +80,32 @@ $(document).ready(function () {
         },
         'columnDefs': [
             {
-                targets: 6,
+                targets: 4,
                 data: '操作',
                 render: function(data, type, full) {
                     var question_id = full.id;
                     var category = full.category;
                     var parent = full.parent;
                     var parent_parent = full.parent_parent;
+                    var status = full.status;
+                    var change_desc = status === 0 ? '关闭' : '启用';
                     var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-question_id="+question_id+">"+'编辑'+"</button>";
                     var next ="<button type='button' class='btn btn-info btn-sm viewNext' data-current_id="+question_id+">"+'详情'+"</button>";
                     var up = "<button type='button' class='btn btn-success btn-sm viewUp' data-parent_parent=" + parent_parent + ">"+'上一层'+"</button>";
                     var add_answer ="<button type='button' class='btn btn-primary btn-sm addAnswer' data-parent_id="+question_id+">"+'添加答案'+"</button>";
                     var add_desc ="<button type='button' class='btn btn-primary btn-sm addDesc' data-current_id="+question_id+">"+'添加描述'+"</button>";
                     var add_question ="<button type='button' class='btn btn-primary btn-sm addQuestion' data-current_id="+question_id+">"+'添加问题'+"</button>";
+                    var change_status ="<button type='button' class='btn btn-primary btn-sm changeStatus' data-current_id="+question_id+ " data-status="+ status +">"+change_desc+"</button>";
                     if(category != 2) {
                         // 非答案
                         if(parent != -1){
-                            return view + next + up +add_answer + add_desc + add_question;
+                            return view + next + up +add_answer + add_desc + add_question + change_status;
                         } else {
-                            return view + next  +add_answer + add_desc + add_question;
+                            return view + next  +add_answer + add_desc + add_question + change_status;
                         }
                     } else {
                         // 答案
-                        return view + up;
+                        return view + up + change_status;
                     }
                 }
             }
@@ -110,10 +113,10 @@ $(document).ready(function () {
         'columns': [
             { data: 'name'},
             { data: 'category_desc'},
-            { data: 'status'},
-            { data: 'parent'},
+            { data: 'status_desc'},
+            //{ data: 'parent'},
             { data: 'ctime'},
-            { data: 'utime'}
+            //{ data: 'utime'}
         ],
         'oLanguage': {
             'sProcessing': '<span style="color:red;">加载中....</span>',
@@ -513,6 +516,40 @@ $(document).ready(function () {
             }
         });
 
+    });
+
+    $(document).on('click', '.changeStatus', function () {
+        var current_id = $(this).data('current_id');
+        var status = $(this).data('status');
+
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+        post_data.se_userid = se_userid;
+        post_data.status = status === 0 ? 1: 0;
+        post_data.question_id = current_id;
+
+        $.ajax({
+            url: '/mis/v1/api/question/update',
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                }
+                else {
+                    $('#questionList').DataTable().draw();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
     });
 
 });
