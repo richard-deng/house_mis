@@ -44,6 +44,9 @@ class QuestionAddHandler(BaseHandler):
     def _post_handler(self):
         data = {}
         params = self.validator.data
+        log.debug('class=QuestionAddHandler|params=%s', params)
+        name = self.req.input()['name']
+        params['name'] = name
         params.update({
             'utime': tools.gen_now_str(),
             'ctime': tools.gen_now_str(),
@@ -68,6 +71,9 @@ class QuestionViewHandler(BaseHandler):
     @with_validator_self
     def _get_handler(self):
         params = self.validator.data
+        log.debug('class=QuestionViewHandler|params=%s', params)
+        name = self.req.input()['name']
+        params['name'] = name
         question_id = params.get('question_id')
         question = Questions(question_id)
         question.load()

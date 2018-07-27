@@ -50,26 +50,24 @@ $(document).ready(function () {
                     "action": function(data){
                         var inst = $.jstree.reference(data.reference);
                         var obj = inst.get_node(data.reference);
+                        var parent = obj.id;
+                        console.log('obj=', obj);
+                        $("#normal_question_parent").text(parent);
+                        $("#normal_question_category").text(obj.original.category);
+                        $('#addQuestionCreateForm').resetForm();
+                        $("label.error").remove();
+                        $("#addQuestionModal").modal();
+                        /*
                         inst.create_node(obj, {}, "last", function (new_node) {
+                            console.log('new_node=', new_node);
                             var parent = new_node.parent;
                             $("#normal_question_parent").text(parent);
                             $("#normal_question_category").text(obj.original.category);
                             $('#addQuestionCreateForm').resetForm();
                             $("label.error").remove();
                             $("#addQuestionModal").modal();
-                            /*
-                            try {
-                                new_node.text="问题名称";
-                                inst.edit(new_node);
-                                console.log('start---------');
-                                console.log(new_node);
-                                console.log('end---------');
-                                console.log('create device finish');
-                            } catch (ex) {
-                                setTimeout(function () { inst.edit(new_node); },0);
-                            }
-                            */
                         });
+                        */
                     }
                 },
                 "修改":{
