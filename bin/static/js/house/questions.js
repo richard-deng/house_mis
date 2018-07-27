@@ -82,15 +82,13 @@ $(document).ready(function () {
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference);
                         var obj = inst.get_node(data.reference);
-                        inst.create_node(obj, {}, "last", function (new_node) {
-                            var question_id = obj.id;
-                            $("#modify_question_id").text(question_id);
-                            var text = obj.text;
-                            $('#renameForm').resetForm();
-                            $("label.error").remove();
-                            $("#rename").val(text);
-                            $('#renameModal').modal();
-                        });
+                        var question_id = obj.id;
+                        $("#modify_question_id").text(question_id);
+                        var text = obj.text;
+                        $('#renameForm').resetForm();
+                        $("label.error").remove();
+                        $("#rename").val(text);
+                        $('#renameModal').modal();
                     }
                 },
                 "删除":{
@@ -103,29 +101,28 @@ $(document).ready(function () {
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference);
                         var obj = inst.get_node(data.reference);
-                        inst.create_node(obj, {}, "last", function (new_node) {
-                            var question_id = obj.id;
-                            $.confirm({
-                                title: '请确认',
-                                content: '确认删除？',
-                                type: 'blue',
-                                typeAnimated: true,
-                                buttons: {
-                                    confirm: {
-                                        text: '确认',
-                                        btnClass: 'btn-red',
-                                        action: function() {
-                                            disable_node(question_id, 1);
-                                        }
-                                    },
-                                    cancel: {
-                                        text: '取消',
-                                        action: function() {
-                                            console.log('clicked cancel');
-                                        }
+                        console.log('obj=', obj);
+                        var question_id = obj.id;
+                        $.confirm({
+                            title: '请确认',
+                            content: '确认删除？',
+                            type: 'blue',
+                            typeAnimated: true,
+                            buttons: {
+                                confirm: {
+                                    text: '确认',
+                                    btnClass: 'btn-red',
+                                    action: function() {
+                                        disable_node(question_id, 1);
+                                    }
+                                },
+                                cancel: {
+                                    text: '取消',
+                                    action: function() {
+                                        console.log('clicked cancel');
                                     }
                                 }
-                            });
+                            }
                         });
                         /*
                         if(inst.is_selected(obj)) {
