@@ -105,7 +105,27 @@ $(document).ready(function () {
                         var obj = inst.get_node(data.reference);
                         inst.create_node(obj, {}, "last", function (new_node) {
                             var question_id = obj.id;
-                            disable_node(question_id, 1);
+                            $.confirm({
+                                title: '请确认',
+                                content: '确认删除？',
+                                type: 'blue',
+                                typeAnimated: true,
+                                buttons: {
+                                    confirm: {
+                                        text: '确认',
+                                        btnClass: 'btn-red',
+                                        action: function() {
+                                            disable_node(question_id, 1);
+                                        }
+                                    },
+                                    cancel: {
+                                        text: '取消',
+                                        action: function() {
+                                            console.log('clicked cancel');
+                                        }
+                                    }
+                                }
+                            });
                         });
                         /*
                         if(inst.is_selected(obj)) {
