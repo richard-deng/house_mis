@@ -47,6 +47,11 @@ class QuestionList(core.Handler):
     def GET(self):
         self.write(template.render('questions.html'))
 
+class QuestionNewList(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
+    def GET(self):
+        self.write(template.render('questions_new.html'))
+
 class RateList(core.Handler):
     @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
     def GET(self):

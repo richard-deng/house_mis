@@ -9,6 +9,7 @@ from house_base.base_handler import BaseHandler
 from house_base.questions import Questions
 from house_base.response import success, error, RESP_CODE
 from house_base.session import house_check_session
+from house_base import define
 import tools
 
 from zbase.web.validator import (
@@ -29,6 +30,7 @@ class QuestionsListHandler(BaseHandler):
         ret.extend(data)
         return json.dumps(ret)
 
+
 class QuestionAddHandler(BaseHandler):
 
     _post_handler_fields = [
@@ -42,6 +44,9 @@ class QuestionAddHandler(BaseHandler):
     def _post_handler(self):
         data = {}
         params = self.validator.data
+        log.debug('class=QuestionAddHandler|params=%s', params)
+        name = self.req.input()['name']
+        params['name'] = name
         params.update({
             'utime': tools.gen_now_str(),
             'ctime': tools.gen_now_str(),
@@ -50,13 +55,30 @@ class QuestionAddHandler(BaseHandler):
         return success(data=data)
 
 
-class QuestionUpdateHandler(BaseHandler):
+class QuestionViewHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('question_id', T_INT, False),
+    ]
 
     _post_handler_fields = [
         Field('name', T_STR, True),
         Field('status', T_INT, True),
         Field('question_id', T_INT, False),
     ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        params = self.validator.data
+        log.debug('class=QuestionViewHandler|params=%s', params)
+        name = self.req.input()['name']
+        params['name'] = name
+        question_id = params.get('question_id')
+        question = Questions(question_id)
+        question.load()
+        return success(data=question.data)
+
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self
@@ -74,4 +96,40 @@ class QuestionUpdateHandler(BaseHandler):
         values['utime'] = tools.gen_now_str()
         question = Questions(question_id)
         ret = question.update(values)
+        return success(data=data)
+
+
+class QuestionsNewListHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('page', T_INT, False),
+        Field('maxnum', T_INT, False),
+        Field('name', T_STR, True),
+        Field('parent', T_INT, True),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        data = {}
+
+        params = self.validator.data
+        info, num = Questions.page(**params)
+        data['num'] = num
+        if info:
+            for item in info:
+                item['id'] = str(item['id'])
+                item['parent'] = str(item['parent'])
+                item['ctime'] = tools.trans_datetime(item['ctime'])
+                item['utime'] = tools.trans_datetime(item['utime'])
+                item['status_desc'] = define.QUESTION_STATUS[item['status']]
+                item['category_desc'] = define.QUESTION_MAP[item['category']]
+                if item['parent'] != -1:
+                    question = Questions(item['id'])
+                    question.load()
+                    parent_parent = question.find_parent_parent()
+                    item['parent_parent'] = parent_parent
+                else:
+                    item['parent_parent'] = -1
+        data['info'] = info
         return success(data=data)

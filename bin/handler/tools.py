@@ -141,3 +141,14 @@ def create_merchant(values):
     user = build_user(values)
     flag, userid = User.create(user, profile)
     return flag, userid
+
+
+def find_parent_parent(current_parents):
+    result = {}
+    with get_connection_exception(TOKEN_HOUSE_CORE) as conn:
+        records = conn.select(table='box_list', where={'id': ('in', list(set(current_parents)))})
+        if records:
+            for record in records:
+                result[record['id']] = record['parent']
+        log.debug('func=find_parent_parent|result=%s', result)
+        return result

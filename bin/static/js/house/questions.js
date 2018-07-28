@@ -41,39 +41,52 @@ $(document).ready(function () {
             }
         },
         //"plugins" : ["dnd", "contextmenu", "changed", "types"],
-        "plugins" : ["changed", "types"],
+        "plugins" : ["changed", "types", "contextmenu"],
         "contextmenu":{
             "items":{
-                "新建问题":{
-                    "label": "新建问题",
+                "添加":{
+                    "label": "添加",
                     "icon": "glyphicon glyphicon-plus",
                     "action": function(data){
-                        var inst = $.jstree.reference(data.reference),
-                            obj = inst.get_node(data.reference);
+                        var inst = $.jstree.reference(data.reference);
+                        var obj = inst.get_node(data.reference);
+                        var parent = obj.id;
+                        console.log('obj=', obj);
+                        $("#normal_question_parent").text(parent);
+                        $("#normal_question_category").text(obj.original.category);
+                        $('#addQuestionCreateForm').resetForm();
+                        $("label.error").remove();
+                        $("#addQuestionModal").modal();
+                        /*
                         inst.create_node(obj, {}, "last", function (new_node) {
-                            try {
-                                new_node.text="问题名称";
-                                inst.edit(new_node);
-                                console.log('create device finish');
-                            } catch (ex) {
-                                setTimeout(function () { inst.edit(new_node); },0);
-                            }
+                            console.log('new_node=', new_node);
+                            var parent = new_node.parent;
+                            $("#normal_question_parent").text(parent);
+                            $("#normal_question_category").text(obj.original.category);
+                            $('#addQuestionCreateForm').resetForm();
+                            $("label.error").remove();
+                            $("#addQuestionModal").modal();
                         });
-                        console.log('create data ', data);
+                        */
                     }
                 },
-                "重命名":{
+                "修改":{
                     "separator_before"  : false,
                     "separator_after"   : false,
                     "_disabled"         : false, //(this.check("rename_node", data.reference, this.get_parent(data.reference), "")),
-                    "label"             : "重命名",
+                    "label"             : "修改",
                     "shortcut_label"    : 'F2',
                     "icon"              : "glyphicon glyphicon-leaf",
                     "action"            : function (data) {
-                        var inst = $.jstree.reference(data.reference),
-                            obj = inst.get_node(data.reference);
-                        inst.edit(obj);
-                        console.log('rename data', data);
+                        var inst = $.jstree.reference(data.reference);
+                        var obj = inst.get_node(data.reference);
+                        var question_id = obj.id;
+                        $("#modify_question_id").text(question_id);
+                        var text = obj.text;
+                        $('#renameForm').resetForm();
+                        $("label.error").remove();
+                        $("#rename").val(text);
+                        $('#renameModal').modal();
                     }
                 },
                 "删除":{
@@ -84,15 +97,39 @@ $(document).ready(function () {
                     "label"             : "删除",
                     "icon"              :"glyphicon glyphicon-remove",
                     "action"            : function (data) {
-                        var inst = $.jstree.reference(data.reference),
-                            obj = inst.get_node(data.reference);
+                        var inst = $.jstree.reference(data.reference);
+                        var obj = inst.get_node(data.reference);
+                        console.log('obj=', obj);
+                        var question_id = obj.id;
+                        $.confirm({
+                            title: '请确认',
+                            content: '确认删除？',
+                            type: 'blue',
+                            typeAnimated: true,
+                            buttons: {
+                                confirm: {
+                                    text: '确认',
+                                    btnClass: 'btn-red',
+                                    action: function() {
+                                        disable_node(question_id, 1);
+                                    }
+                                },
+                                cancel: {
+                                    text: '取消',
+                                    action: function() {
+                                        console.log('clicked cancel');
+                                    }
+                                }
+                            }
+                        });
+                        /*
                         if(inst.is_selected(obj)) {
                             inst.delete_node(inst.get_selected());
                         }
                         else {
                             inst.delete_node(obj);
                         }
-                        console.log('delete data', data);
+                        */
                     }
                 }
             }
@@ -194,6 +231,7 @@ $(document).ready(function () {
         $('#addQuestionModal').modal();
     });
 
+    /*
     $('#questionCreateSubmit').click(function () {
         var question_vt = $('#addQuestionCreateForm').validate({
             rules: {
@@ -242,6 +280,41 @@ $(document).ready(function () {
             create_node(sel_id, question, 1);
             $('#addQuestionModal').modal('hide');
         }
+    });
+    */
+    $('#questionCreateSubmit').click(function () {
+        var question_vt = $('#addQuestionCreateForm').validate({
+            rules: {
+                question_add: {
+                    required: true,
+                    maxlength: 200
+                }
+            },
+            messages: {
+                question_add: {
+                    required: '请输入问题内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = question_vt.form();
+        if(!ok){
+            return false;
+        }
+        var question = $('#question_add').val();
+        var parent = $('#normal_question_parent').text();
+        var category = $('#normal_question_category').text();
+        var new_category = category === '1' ? 2: 1;
+        console.log('category=', category, 'new_category=', new_category);
+        create_node(parent, question, new_category);
+        $('#addQuestionModal').modal('hide');
     });
 
     $('#do_add_answer').click(function(){
@@ -343,6 +416,7 @@ $(document).ready(function () {
 
     });
 
+    /*
     $('#renameSubmit').click(function () {
         var rename_content_vt = $('#renameForm').validate({
             rules: {
@@ -379,6 +453,38 @@ $(document).ready(function () {
             update_node(question_id, content);
             $('#renameModal').modal('hide');
         }
+    });
+    */
+    $('#renameSubmit').click(function () {
+        var rename_content_vt = $('#renameForm').validate({
+            rules: {
+                rename: {
+                    required: true,
+                    maxlength: 200
+                }
+            },
+            messages: {
+                rename: {
+                    required: '请输入修改内容',
+                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                }
+            },
+            errorPlacement: function(error, element){
+                if(element.is(':checkbox')){
+                    error.appendTo(element.parent().parent().parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+        var ok = rename_content_vt.form();
+        if(!ok){
+            return false;
+        }
+        var content = $('#rename').val();
+        var question_id = $('#modify_question_id').text();
+        update_node(question_id, content);
+        $('#renameModal').modal('hide');
     });
 
     $('#do_delete').click(function(){
