@@ -10,6 +10,7 @@ from handler import (
     user,
     rate,
     questions,
+    weixin,
 )
 
 urls = (
@@ -49,6 +50,9 @@ urls = (
     ('^/mis/v1/api/rate/list$', rate.RateListHandler),
     ('^/mis/v1/api/rate/create$', rate.RateAddHandler),
     ('^/mis/v1/api/rate/view$', rate.RateViewHandler),
+
+    # 退款
+    ('^/mis/v1/api/weixin/refund$', weixin.RefundHandler),
 
     # 页面
     ('^/$', page.Root),

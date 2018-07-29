@@ -27,7 +27,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         ]
         self.client = HttpClient(self.server, client_class=RequestsClient)
 
-    @unittest.skip("skipping")
+    # @unittest.skip("skipping")
     def test_login(self):
         self.url = '/mis/v1/api/login'
         self.send = {
@@ -133,7 +133,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
-    # @unittest.skip("skipping")
+    @unittest.skip("skipping")
     def test_rate_view_post(self):
         self.url = '/mis/v1/api/rate/view'
         self.send.update({'rate_id': 1, 'rate': 4.32})
@@ -142,6 +142,14 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
+    @unittest.skip("skipping")
+    def test_weixin_refund(self):
+        self.url = '/mis/v1/api/weixin/refund'
+        self.send.update({'syssn': '201807290013408839', 'txamt': 1})
+        ret = self.client.post(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestHouseMisInstrument)
