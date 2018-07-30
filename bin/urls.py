@@ -11,6 +11,7 @@ from handler import (
     rate,
     questions,
     weixin,
+    trade_order,
 )
 
 urls = (
@@ -53,6 +54,9 @@ urls = (
 
     # 退款
     ('^/mis/v1/api/weixin/refund$', weixin.RefundHandler),
+
+    # 交易流水
+    ('^/mis/v1/api/trade/list$', trade_order.TradeOrderListHandler),
 
     # 页面
     ('^/$', page.Root),

@@ -56,3 +56,8 @@ class RateList(core.Handler):
     @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
     def GET(self):
         self.write(template.render('rate.html'))
+
+class TradeList(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
+    def GET(self):
+        self.write(template.render('trade_order.html'))
