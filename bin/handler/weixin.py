@@ -2,6 +2,7 @@
 import logging
 import json
 
+import config
 from config import cookie_conf
 from runtime import g_rt
 
