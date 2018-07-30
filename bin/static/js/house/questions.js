@@ -52,6 +52,9 @@ $(document).ready(function () {
                         var obj = inst.get_node(data.reference);
                         var parent = obj.id;
                         console.log('obj=', obj);
+                        parent_category = obj.original.category;
+                        var title = parent_category == 2 ? '问题' : '答案';
+                        $("#normal_question_title").text(title);
                         $("#normal_question_parent").text(parent);
                         $("#normal_question_category").text(obj.original.category);
                         $('#addQuestionCreateForm').resetForm();
