@@ -68,6 +68,7 @@ urls = (
     ('^/mis/v1/page/question_list.html$', page.QuestionList),
     ('^/mis/v1/page/question/new/list.html$', page.QuestionNewList),
     ('^/mis/v1/page/rate_list.html$', page.RateList),
+    ('^/mis/v1/page/trade_list.html$', page.TradeList),
 
     # 测试summernote文件上传
     ('^/mis/v1/page/test_summernote.html$', page.TestSummerNote),
