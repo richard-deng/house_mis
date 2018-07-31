@@ -3,6 +3,7 @@
  */
 $(document).ready(function () {
     //get_tree();
+    var default_parent = -1;
     var se_userid = window.localStorage.getItem('myid');
     var question_url = '/mis/v1/api/question/list?se_userid=' + se_userid;
     $('#container').jstree({
@@ -34,10 +35,28 @@ $(document).ready(function () {
                 ]
             }]
             */
+            /* load all
             'data': {
                 // "url": "/mis/v1/api/question/list?se_userid=1",
                 "url": question_url,
                 "dataType": "json"
+            }
+            */
+            'data': {
+                'url': '/mis/v1/api/question/lazy/load',
+                'dataType': 'json',
+                'data': function (node) {
+                    if(node.id !== '#'){
+                        default_parent = node.id;
+                    }
+                    return {
+                        'se_userid': se_userid,
+                        'parent': default_parent
+                    }
+                },
+                success: function () {
+                    console.log('success');
+                }
             }
         },
         //"plugins" : ["dnd", "contextmenu", "changed", "types"],
