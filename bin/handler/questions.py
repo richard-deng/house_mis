@@ -133,3 +133,25 @@ class QuestionsNewListHandler(BaseHandler):
                     item['parent_parent'] = -1
         data['info'] = info
         return success(data=data)
+
+
+class QuestionsLazyLoadHandler(BaseHandler):
+    '''
+    默认返回所有parent=-1的根问题，其它点击加载
+    '''
+
+    _get_handler_fields = [
+        Field('parent', T_INT, False)
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        ret = []
+        params = self.validator.data
+        parent = params.get('parent')
+        if not parent:
+            parent = -1
+        data = Questions.load_current_children(parent=parent)
+        ret.extend(data)
+        return json.dumps(ret)
