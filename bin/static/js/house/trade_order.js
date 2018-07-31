@@ -41,6 +41,16 @@ $(document).ready(function () {
                 get_data.syssn = syssn;
             }
 
+            var consumer_mobile = $("#s_consumer_mobile").val();
+            if(consumer_mobile){
+                get_data.consumer_mobile = consumer_mobile;
+            }
+
+            var consumer_name = $("#s_consumer_name").val();
+            if(consumer_name){
+                get_data.consumer_name = consumer_name;
+            }
+
             var start_time = $("#start_time").val();
             var end_time = $("#end_time").val();
             if(start_time && end_time){
@@ -107,6 +117,7 @@ $(document).ready(function () {
             { data: 'cancel'},
             { data: 'txamt'},
             { data: 'origssn'},
+            { data: 'err_desc'},
             { data: 'sysdtm'},
             { data: 'paydtm'}
         ],
@@ -132,11 +143,27 @@ $(document).ready(function () {
                s_syssn: {
                    required: false,
                    maxlength: 60
+               },
+               s_consumer_mobile: {
+                   required: false,
+                   maxlength: 11,
+               },
+               s_consumer_name: {
+                   required: false,
+                   maxlength: 30,
                }
            },
            messages: {
                s_syssn: {
                    required: '请输入流水号',
+                   maxlength: $.validator.format("请输入一个长度最多是 {0} 的字符串")
+               },
+               s_consumer_name: {
+                   required: '请输入消费者名称',
+                   maxlength: $.validator.format("请输入一个长度最多是 {0} 的字符串")
+               },
+               s_consumer_mobile: {
+                   required: '请输入消费者电话',
                    maxlength: $.validator.format("请输入一个长度最多是 {0} 的字符串")
                }
            },

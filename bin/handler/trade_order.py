@@ -8,6 +8,7 @@ from house_base.base_handler import BaseHandler
 from house_base.trade import TradeOrder
 from house_base.response import success, error, RESP_CODE
 from house_base.session import house_check_session
+from house_base.tools import trans_amt
 
 from zbase.web.validator import (
     with_validator_self, Field, T_INT, T_STR
@@ -24,6 +25,8 @@ class TradeOrderListHandler(BaseHandler):
         Field('syssn', T_STR, True),
         Field('start_time', T_STR, True),
         Field('end_time', T_STR, True),
+        Field('consumer_mobile', T_STR, True),
+        Field('consumer_name', T_STR, True),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -32,6 +35,10 @@ class TradeOrderListHandler(BaseHandler):
         data ={}
         params = self.validator.data
         info, num = TradeOrder.page(**params)
-        data['info'] = info
         data['num'] = num
+        data['info'] = info
+        if data['info']:
+            for record in data['info']:
+                trans_amt(record)
+
         return success(data=data)

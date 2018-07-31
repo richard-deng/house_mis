@@ -45,9 +45,20 @@
             <div class="panel-body">
                 <div class="row">
                     <form class="form-inline trade_query" id="trade_query">
+
                         <div class="form-group">
                             <label for="s_syssn">流水号</label>
                             <input type="text" class="form-control" id="s_syssn" name="s_syssn" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="s_consumer_mobile">消费者电话</label>
+                            <input type="text" class="form-control" id="s_consumer_mobile" name="s_consumer_mobile" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="s_consumer_name">消费者名称</label>
+                            <input type="text" class="form-control" id="s_consumer_name" name="s_consumer_name" placeholder="">
                         </div>
 
                         <div class="datetimepicker-container" style="margin-top: 12px;">
@@ -92,6 +103,7 @@
                             <th>取消状态</th>
                             <th>金额</th>
                             <th>原交易流水号</th>
+                            <th>错误描述</th>
                             <th>系统时间</th>
                             <th>完成时间</th>
                         </tr>
