@@ -12,6 +12,7 @@ from handler import (
     questions,
     weixin,
     trade_order,
+    agreement
 )
 
 urls = (
@@ -62,6 +63,10 @@ urls = (
     ('^/mis/v1/api/trade/list$', trade_order.TradeOrderListHandler),
     ('^/mis/v1/api/trade/view$', trade_order.TradeOrderViewHandler),
 
+    # 协议
+    ('^/mis/v1/api/agreement/view$', agreement.AgreementViewHandler),
+
+
     # 页面
     ('^/$', page.Root),
     ('^/mis/v1/page/login.html$', page.Login),
@@ -73,6 +78,7 @@ urls = (
     ('^/mis/v1/page/question/new/list.html$', page.QuestionNewList),
     ('^/mis/v1/page/rate_list.html$', page.RateList),
     ('^/mis/v1/page/trade_list.html$', page.TradeList),
+    ('^/mis/v1/page/agreement.html$', page.Agreement),
 
     # 测试summernote文件上传
     ('^/mis/v1/page/test_summernote.html$', page.TestSummerNote),
