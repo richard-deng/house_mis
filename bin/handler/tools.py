@@ -32,7 +32,7 @@ def get_merchant(user_id):
     keep_fields = [
         'auth_user.id', 'auth_user.mobile', 'auth_user.state', 'auth_user.email',
         'auth_user.is_active', 'profile.province', 'profile.city', 'profile.nickname',
-        'profile.name', 'profile.idnumber',
+        'profile.name', 'profile.idnumber', 'auth_user.user_type'
     ]
     log.debug('yy')
     log.debug('token=%s', TOKEN_HOUSE_CORE)
@@ -128,7 +128,8 @@ def build_user(values):
 
     user['state'] = REGISTER_STATE
     user['is_active'] = DEFAULT_ACTIVE
-    password = values.get('mobile')[-6:]
+    # password = values.get('mobile')[-6:]
+    password = values['password']
     h = hashlib.md5(password)
     md5_password = h.hexdigest()
     log.info('md5_password=%s', md5_password)

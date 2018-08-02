@@ -12,7 +12,7 @@ from constant import INVALID_VALUE
 from zbase.base.dbpool import with_database
 from house_base.response import error, success, RESP_CODE
 from house_base.session import house_check_session
-from house_base.define import (HOUSE_USER_STATE_MAP, TOKEN_HOUSE_CORE)
+from house_base.define import (HOUSE_USER_STATE_MAP, TOKEN_HOUSE_CORE, HOUSE_USER_TYPE_MAP)
 from zbase.web.validator import (
     with_validator_self, Field, T_INT, T_STR
 )
@@ -41,7 +41,7 @@ class UserListHandler(BaseHandler):
             where['auth_user.id'] = user_id
 
         keep_fields = [
-            'auth_user.id', 'auth_user.state', 'auth_user.mobile',
+            'auth_user.id', 'auth_user.state', 'auth_user.mobile', 'auth_user.user_type',
             'auth_user.date_joined','profile.nickname', 'profile.name',
             'profile.idnumber',
         ]
@@ -63,12 +63,15 @@ class UserListHandler(BaseHandler):
             if item.get('date_joined'):
                 item['date_joined'] = tools.trans_datetime(item['date_joined'])
             item['state_desc'] = HOUSE_USER_STATE_MAP.get(item['state'], '')
+            item['user_type_desc'] = HOUSE_USER_TYPE_MAP.get(item['user_type'], '')
         return data
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self
     def _get_handler(self):
         data = {}
+        if self.user.userid not in ALLOW_ADD_USER_ID:
+            return success(data={'info': [], 'num': 0})
         params = self.validator.data
         curr_page = params.get('page')
         max_page_num = params.get('maxnum')
@@ -94,6 +97,7 @@ class UserViewHandler(BaseHandler):
     _post_handler_fields = [
         Field('user_id', T_INT, False),
         Field('mobile', T_STR, True),
+        Field('user_type', T_STR, True),
         Field('email', T_STR, True),
         Field('name', T_STR, True),
         Field('idnumber', T_STR, True),
@@ -131,6 +135,8 @@ class UserCreateHandler(BaseHandler):
 
     _post_handler_fields = [
         Field('mobile', T_STR, False),
+        Field('password', T_STR, False),
+        Field('user_type', T_STR, False),
         Field('email', T_STR, False),
         Field('name', T_STR, False),
         Field('idnumber', T_STR, True),
@@ -160,3 +166,23 @@ class UserCreateHandler(BaseHandler):
             return success(data={'userid': userid})
 
         return error(RESP_CODE.DATAERR)
+
+
+class UserStateChangeHandler(BaseHandler):
+
+    _post_handler_fields =[
+        Field('state', T_INT, False),
+        Field('user_id', T_INT, False),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _post_handler(self):
+        params = self.validator.data
+        user_state = params['state']
+        user_id = params['user_id']
+        user = User(user_id)
+        ret = user.update(value={'state': user_state})
+        if ret != 1:
+            return error(RESP_CODE.DBERR)
+        return success(data={})

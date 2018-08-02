@@ -24,6 +24,7 @@ urls = (
     ('^/mis/v1/api/user/list$', user.UserListHandler),
     ('^/mis/v1/api/user/create$', user.UserCreateHandler),
     ('^/mis/v1/api/user/view$', user.UserViewHandler),
+    ('^/mis/v1/api/user/state$', user.UserStateChangeHandler),
 
     # 九宫格
     ('^/mis/v1/api/box/list$', box_list.BoxListHandler),
