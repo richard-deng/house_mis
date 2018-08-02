@@ -59,6 +59,7 @@ urls = (
 
     # 交易流水
     ('^/mis/v1/api/trade/list$', trade_order.TradeOrderListHandler),
+    ('^/mis/v1/api/trade/view$', trade_order.TradeOrderViewHandler),
 
     # 页面
     ('^/$', page.Root),

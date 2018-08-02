@@ -42,3 +42,19 @@ class TradeOrderListHandler(BaseHandler):
                 trans_amt(record)
 
         return success(data=data)
+
+class TradeOrderViewHandler(BaseHandler):
+
+    _get_handler_fields = [
+        Field('syssn', T_STR, False),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _get_handler(self):
+        params = self.validator.data
+        syssn = params['syssn']
+        trade = TradeOrder(syssn)
+        if not trade.data:
+            return error(RESP_CODE.DATAERR)
+        return success(data=trade.data) 

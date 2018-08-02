@@ -95,17 +95,15 @@ $(document).ready(function () {
             });
         },
         'columnDefs': [
-            /*
             {
-                targets: 13,
+                targets: 11,
                 data: '操作',
                 render: function(data, type, full) {
                     var syssn =full.syssn;
-                    var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-syssn="+syssn+">"+'查看'+"</button>";
+                    var view ="<button type='button' class='btn btn-info btn-sm viewEdit' data-syssn="+syssn+">"+'详情'+"</button>";
                     return view;
                 }
             }
-            */
         ],
         'columns': [
             // { data: 'openid'},
@@ -181,6 +179,84 @@ $(document).ready(function () {
         }
         $('#tradeList').DataTable().draw();
     });
+
+
+    $(document).on('click', '.viewEdit', function(){
+        $("label.error").remove();
+        var se_userid = window.localStorage.getItem('myid');
+        var syssn = $(this).data('syssn');
+    
+        var user = {
+            'consumer_name':'消费者名称',
+            'consumer_mobile':'微信电话',
+        };
+        var trade = {
+            'txamt':'金额',
+            'cancel':'取消状态',
+            'retcd':'返回代码',
+            'origssn':'原交易流水号',
+            'syssn':'系统流水号',
+            'sysdtm':'系统时间',
+            'status':'交易状态',
+        };
+        var order = {
+            'order_name':'订单名称',
+            'order_desc':'订单描述'
+        };
+    
+        var headname = {
+            'user':'消费者',
+            'trade':'交易',
+            'order':'订单'
+        };
+    
+        var name2Chinese = {
+            'user':user,
+            'trade':trade,
+            'order':order,
+        };
+    
+        var get_data = {
+            'se_userid': se_userid,
+            'syssn': syssn
+        };
+        $.ajax({
+            url: '/mis/v1/api/trade/view',
+            type: 'GET',
+            dataType: 'json',
+            data: get_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                }
+                else {
+                    trade = data.data;
+                    console.log(trade);
+                    $('#details_list').html('');
+                    $('#tradelist_details-head').html("详细信息  syssn=" + syssn);
+                    for (val1 in name2Chinese){
+                        $('#details_list').append("<h4>" + headname[val1] + "</h4>");
+                        var tmp = '';
+                        tmp += "<div class='row'>";
+    
+                        for (val2 in name2Chinese[val1]){
+                            tmp += ("<p class='col-sm-4'>" + name2Chinese[val1][val2] + "：" + trade[val2] + "</p>");
+                        }
+                        tmp += "</div>";
+                        $('#details_list').append(tmp);
+                    }
+                    $('#tradelist-details').modal();
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求异常');
+            }
+        });
+    }); 
 
 
 });
