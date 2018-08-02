@@ -40,6 +40,7 @@ urls = (
     ('^/mis/v1/api/text/list$', text.TextInfoListHandler),
     ('^/mis/v1/api/text/view$', text.TextInfoViewHandler),
     ('^/mis/v1/api/text/create$', text.TextInfoCreateHandler),
+    ('^/mis/v1/api/text/disable$', text.TextInfoDeleteHandler),
 
     # 问答
     ('^/mis/v1/api/question/list$', questions.QuestionsListHandler),

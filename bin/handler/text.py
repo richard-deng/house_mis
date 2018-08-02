@@ -6,6 +6,7 @@ import traceback
 from config import cookie_conf
 from config import BASE_URL
 from runtime import g_rt
+from house_base import define
 from house_base import tools as base_tools
 from house_base.base_handler import BaseHandler
 from house_base.box_list import BoxList
@@ -69,6 +70,7 @@ class TextInfoListHandler(BaseHandler):
         Field('page', T_INT, False),
         Field('maxnum', T_INT, False),
         Field('name', T_STR, True),
+        Field('box_name', T_STR, True),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -77,18 +79,18 @@ class TextInfoListHandler(BaseHandler):
         data = {}
         params = self.validator.data
 
-        info, num = TextInfo.page(**params)
+        info, num = TextInfo.page_new(**params)
         data['num'] = num
         if info:
-            boxs = BoxList.load_all(where={})
-            box_name_map = {}
-            for box in boxs:
-                box_name_map[box['id']] = box['name']
+            # boxs = BoxList.load_all(where={})
+            # box_name_map = {}
+            # for box in boxs:
+            #     box_name_map[box['id']] = box['name']
             for item in info:
                 text_id = item['id']
                 item['id'] = str(item['id'])
                 item['box_id'] = str(item['box_id'])
-                item['box_name'] = box_name_map.get(item['box_id'], '')
+                # item['box_name'] = box_name_map.get(item['box_id'], '')
                 icon_name = item['icon']
                 item['icon'] = BASE_URL + icon_name
                 item['icon_name'] = icon_name
@@ -175,4 +177,26 @@ class TextInfoViewHandler(BaseHandler):
         d = TextDetail(detail_id)
         ret = d.update(detail_values)
         log.debug('TextInfoViewHandler|post update detail ret=%s', ret)
+        return success(data={})
+
+
+class TextInfoDeleteHandler(BaseHandler):
+
+    _post_handler_fields = [
+        Field('text_id', T_INT, False),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _post_handler(self):
+        params = self.validator.data
+        text_id = params['text_id']
+        text = TextInfo(text_id)
+        text.load()
+        if not text.data:
+            return error(RESP_CODE.DATAERR)
+        delete_values = {'available': define.TEXT_TITLE_DISABLE}
+        ret = text.update(delete_values)
+        if ret != 1:
+            return error(RESP_CODE.DBERR)
         return success(data={})

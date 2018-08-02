@@ -43,6 +43,11 @@ $(document).ready(function () {
                 get_data.name = name;
             }
 
+            var box_name = $("#box_name").val();
+            if(box_name){
+                get_data.box_name = box_name;
+            }
+            
             $.ajax({
                 url: '/mis/v1/api/text/list',
                 type: 'GET',
@@ -97,8 +102,9 @@ $(document).ready(function () {
                 data: '操作',
                 render: function(data, type, full) {
                     var text_id = full.id;
-                    var view ="<button type='button' class='btn btn-warning btn-sm viewEdit' data-text_id="+text_id+">"+'查看'+"</button>";
-                    return view;
+                    var view ="<button type='button' class='btn btn-info btn-sm viewEdit' data-text_id="+text_id+">"+'查看'+"</button>";
+                    var del ="<button type='button' class='btn btn-warning btn-sm deleteText' data-text_id="+text_id+">"+'删除'+"</button>";
+                    return view + del;
                 }
             }
         ],
@@ -250,6 +256,59 @@ $(document).ready(function () {
         });
     });
 
+
+    $(document).on('click', '.deleteText', function(){
+        var se_userid = window.localStorage.getItem('myid');
+        var text_id = $(this).data('text_id');
+        var post_data = {};
+        post_data.se_userid = se_userid;
+        post_data.text_id = text_id;
+        $.confirm({
+            title: '请确认',
+            content: '确认删除',
+            type: 'blue',
+            typeAnimated: true,
+            buttons: {
+                confirm: {
+                    text: '确认',
+                    btnClass: 'btn-red',
+                    action: function() {
+                        console.log('do confirm delete');
+			$.ajax({
+			    url: '/mis/v1/api/text/disable',
+			    type: 'POST',
+			    dataType: 'json',
+			    data: post_data,
+			    success: function(data) {
+				var respcd = data.respcd;
+				if(respcd !== '0000'){
+				    var resperr = data.resperr;
+				    var respmsg = data.respmsg;
+				    var msg = resperr ? resperr : respmsg;
+				    toastr.warning(msg);
+				    return false;
+				}
+				else {
+				    toastr.success('删除成功');
+				    $('#textList').DataTable().draw();
+				}
+			    },
+			    error: function(data) {
+				toastr.warning('请求异常');
+			    }
+			});
+                    }
+                },
+                cancel: {
+                    text: '取消',
+                    action: function() {
+                        console.log('do cancel delete');
+                    }
+                }
+            }
+        });
+    });
+
     $("#text_search").click(function(){
 
         var text_query_vt = $('#text_list_query').validate({
@@ -280,7 +339,8 @@ $(document).ready(function () {
     });
 
     $('#summernote').summernote({
-        minHeight: 320,
+        // minHeight: 320,
+        minHeight: 420,
         // maxHeight: 320,
         minWidth: 512,
         // maxWidth: 512,

@@ -108,7 +108,7 @@ $(document).ready(function () {
             */
         ],
         'columns': [
-            { data: 'openid'},
+            // { data: 'openid'},
             { data: 'consumer_name'},
             { data: 'consumer_mobile'},
             { data: 'order_name'},
