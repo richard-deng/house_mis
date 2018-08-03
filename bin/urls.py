@@ -14,6 +14,7 @@ from handler import (
     trade_order,
     agreement,
     carousel,
+    banner,
 )
 
 urls = (
@@ -66,6 +67,9 @@ urls = (
 
     # 协议
     ('^/mis/v1/api/agreement/view$', agreement.AgreementViewHandler),
+
+    # 滚动文字
+    ('^/mis/v1/api/banner/view$', banner.BannerViewHandler),
 
     # 轮播
     ('^/mis/v1/api/carousel/list$', carousel.CarouselListHandler),

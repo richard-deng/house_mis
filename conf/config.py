@@ -90,3 +90,5 @@ MCH_ID = ''
 SECRET = ''
 # 协议文件
 AGREEMENT = '/home/xunchengfangfu/house/house_mis/data/agreement.html'
+# 滚动文字文案
+BANNER_TEXT = '/home/xunchengfangfu/house/house_mis/data/banner.txt'
