@@ -77,6 +77,8 @@ ALLOW_ADD_USER_ID = [1]
 cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'mis.xunchengfangfu.com', 'path':'/mis'}
 # 上传的文件存放位置
 SAVE_PATH = '/home/xunchengfangfu/house/house_mis/bin/static/upload/icon/'
+# 上传的文件存储位置
+FILE_SAVE_PATH = '/home/xunchengfangfu/house/house_mis/bin/static/upload/file/'
 # 
 TAIL_PATH = '/mis/static/upload/icon/'
 # 链接前缀
