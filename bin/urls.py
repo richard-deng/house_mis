@@ -89,6 +89,7 @@ urls = (
     ('^/mis/v1/page/trade_list.html$', page.TradeList),
     ('^/mis/v1/page/agreement.html$', page.Agreement),
     ('^/mis/v1/page/carousel_list.html$', page.Carousel),
+    ('^/mis/v1/page/banner.html$', page.Banner),
 
     # 测试summernote文件上传
     ('^/mis/v1/page/test_summernote.html$', page.TestSummerNote),

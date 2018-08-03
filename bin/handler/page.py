@@ -71,3 +71,8 @@ class Carousel(core.Handler):
     @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
     def GET(self):
         self.write(template.render('carousel.html'))
+
+class Banner(core.Handler):
+    @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
+    def GET(self):
+        self.write(template.render('banner.html'))
