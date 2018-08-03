@@ -1,7 +1,7 @@
 # coding: utf-8
 import logging
 
-from config import SAVE_PATH
+from config import SAVE_PATH, FILE_SAVE_PATH
 from config import cookie_conf
 from config import BASE_URL
 from config import TAIL_PATH
@@ -71,6 +71,22 @@ class UploadIconHandler(BaseHandler):
             f.write(content)
         icon_url = TAIL_PATH + filename
         return success(data={"icon_url": icon_url, "icon_name": filename})
+
+
+class FileUploadHandler(BaseHandler):
+
+    # @house_check_session(g_rt.redis_pool, cookie_conf)
+    # @with_validator_self
+    def _post_handler(self):
+        data = self.req.input()
+        all_name = data.get('name')
+        file = data.get('file')
+        content = file.read()
+        filename =  all_name
+        full_name = FILE_SAVE_PATH + filename
+        with open(full_name, 'wb+') as f:
+            f.write(content)
+        return success(data={})
 
 
 class BoxCreateHandler(BaseHandler):
