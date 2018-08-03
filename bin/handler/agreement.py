@@ -35,7 +35,7 @@ class AgreementViewHandler(BaseHandler):
     @house_check_session(g_rt.redis_pool, cookie_conf)
     @with_validator_self
     def _post_handler(self):
-        params = self.validator.data
+        params = self.req.input()
         content = params['content']
         with open(AGREEMENT, 'wb') as f:
             f.write(content)
