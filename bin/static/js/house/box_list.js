@@ -456,6 +456,8 @@ $(document).ready(function(){
             $('#text_add').text(box_id);
             $('#summernote').summernote('code', '');
             $('#article_content').html('');
+            $("#file_add_div").hide();
+            $("#rich_text_add_div").show();
             $('#textCreateModal').modal();
         } else {
             // 盒子
@@ -947,8 +949,10 @@ function upload_inline_create_file(obj) {
 function upload_file(obj) {
     var se_userid = window.localStorage.getItem('myid');
     var formData = new FormData();
-    var name = $("#file_add").val();
+    /// var name = $("#file_add").val();
+    var name = $("#file_add")[0].files[0].name;
     $("#text_name_add").val(name);
+
     formData.append("file", $("#file_add")[0].files[0]);
     formData.append("name", name);
     formData.append("se_userid", se_userid);

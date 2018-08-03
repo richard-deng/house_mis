@@ -29,6 +29,7 @@ class TextInfoCreateHandler(BaseHandler):
         Field('content', T_STR, True),
         Field('icon', T_STR, False),
         Field('available', T_INT, False),
+        Field('save_type', T_INT, False),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -36,6 +37,7 @@ class TextInfoCreateHandler(BaseHandler):
     def _post_handler(self):
         content_str = ''
         params = self.validator.data
+        save_type = params['save_type']
         content = params.pop('content')
         box_id = params.get('box_id')
         box = BoxList(box_id)
@@ -47,6 +49,8 @@ class TextInfoCreateHandler(BaseHandler):
         log.debug('class=TextInfoCreateHandler|create text info ret=%s', ret)
         if ret != 1:
             return error(errcode=RESP_CODE.DATAERR)
+        if save_type == define.SAVE_TYPE_FILE:
+            return success(data={})        
         log.debug('content=%s', content)
         if isinstance(content, list) and content:
             for item in content:
@@ -120,6 +124,7 @@ class TextInfoViewHandler(BaseHandler):
         Field('content', T_STR, True),
         Field('icon', T_STR, False),
         Field('available', T_INT, False),
+        Field('save_type', T_INT, False),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -132,15 +137,19 @@ class TextInfoViewHandler(BaseHandler):
         text.load()
         if not text.data:
             return error(errcode=RESP_CODE.DATAERR)
-        detail = TextDetail.load_by_text_id(text_id)
-        # text.data['content'] = detail.data.get('content') if detail.data else ''
-        try:
-            content_str = detail.data.get('content') if detail.data else ''
-            content = base64.b64decode(content_str)
-        except Exception:
-            log.warn(traceback.format_exc())
-            content = detail.data.get('content') if detail.data else ''
-        text.data['content'] = content
+        save_type = text.data['save_type']
+        if save_type == define.SAVE_TYPE_RICH:
+            detail = TextDetail.load_by_text_id(text_id)
+            # text.data['content'] = detail.data.get('content') if detail.data else ''
+            try:
+                content_str = detail.data.get('content') if detail.data else ''
+                content = base64.b64decode(content_str)
+            except Exception:
+                log.warn(traceback.format_exc())
+                content = detail.data.get('content') if detail.data else ''
+            text.data['content'] = content
+        else:
+            text.data['content'] = ''
         data = text.data
         icon_name = data['icon']
         data['icon'] = BASE_URL + icon_name
@@ -152,16 +161,23 @@ class TextInfoViewHandler(BaseHandler):
     def _post_handler(self):
         content_str = ''
         params = self.validator.data
+        save_type = params['save_type']
         content = params.pop('content')
         text_id = params.pop('text_id')
+
         text = TextInfo(text_id)
         text.load()
         if not text.data:
             return error(errcode=RESP_CODE.DATAERR)
+
         ret = text.update(params)
         log.debug('TextInfoViewHandler|post update info ret=%s', ret)
         if ret != 1:
             return error(errcode=RESP_CODE.DATAERR)
+
+        if save_type == define.SAVE_TYPE_FILE:
+            return success(data={})
+
         detail = TextDetail.load_by_text_id(text_id)
         detail_id = detail.data.get('id')
         log.debug('content=%s', content)

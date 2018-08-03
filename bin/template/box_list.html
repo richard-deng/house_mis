@@ -322,7 +322,7 @@
                         <label for="save_type_add" class="col-md-2 control-label">存储类型</label>
                         <div class="col-md-10">
                             <select class="form-control" id="save_type_add" name="save_type_add">
-                                <option value="1">富文本</option>
+                                <option value="1" selected>富文本</option>
                                 <option value="2">文件</option>
                             </select>
                         </div>
@@ -341,7 +341,7 @@
                     <div class="form-group" id="file_add_div">
                         <label for="file_add" class="col-md-2 control-label">文件</label>
                         <div class="col-md-2">
-                            <input type="file" id="file_add" onchange="upload_text_icon_file(this)">
+                            <input type="file" id="file_add" onchange="upload_file(this)">
                         </div>
                     </div>
 

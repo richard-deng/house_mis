@@ -161,10 +161,22 @@ $(document).ready(function () {
                 }
                 else {
                     text_data = data.data;
-
+                    var save_type = text_data.save_type;
+                    console.log("save_type ", save_type);
+                    $("#save_type_view").val(save_type);
                     $('#text_name_view').val(text_data.name);
                     //$('#text_content_view').val(text_data.content);
-                    $('#summernote').summernote('code', text_data.content);
+                    if(save_type === 1){
+                        console.log("rich");
+                        $('#summernote').summernote('code', text_data.content);
+                        $("#rich_text_view_div").show();
+                        $("#file_view_div").hide();
+                    } else {
+                        console.log("file");
+                        $("#rich_text_view_div").hide();
+                        $("#file_view_div").show();
+                        $('#text_name_view').attr("disabled", true);
+                    }
                     $('#text_available_view').val(text_data.available);
                     $("#text_icon_url_view").attr('src', text_data.icon).show();
                     $('#text_icon_name_view').text(text_data.icon_name);
@@ -225,8 +237,11 @@ $(document).ready(function () {
         post_data.se_userid = se_userid;
         post_data.text_id = $('#text_view').text();
         post_data.name = $("#text_name_view").val();
+        post_data.save_type = $("#save_type_view").val();
         //post_data.content = $('#text_content_view').val();
-        post_data.content = $('#summernote').summernote('code');
+        if(post_data.save_type === "1"){
+            post_data.content = $('#summernote').summernote('code');
+        }
         post_data.available = $('#text_available_view').val();
         post_data.icon = $('#text_icon_name_view').text();
 
@@ -396,6 +411,19 @@ $(document).ready(function () {
         $('#article_content').show();
     });
 
+    $("#save_type_view").change(function () {
+        var save_type = $("#save_type_view").val();
+        if(save_type === "1"){
+            $("#file_view_div").hide();
+            $("#rich_text_view_div").show();
+            $('#text_name_view').attr("disabled", false);
+        } else {
+            $("#file_view_div").show();
+            $("#rich_text_view_div").hide();
+            $('#text_name_view').attr("disabled", true);
+        }
+    });
+
 });
 
 function upload_text_icon_view(obj) {
@@ -424,6 +452,36 @@ function upload_text_icon_view(obj) {
         },
         error: function (response) {
             console.log(response);
+        }
+    });
+}
+
+function upload_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    /// var name = $("#file_add").val();
+    var name = $("#file_view")[0].files[0].name;
+    $("#text_name_view").val(name);
+
+    formData.append("file", $("#file_view")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/file/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before file send ");
+        },
+        success: function (data) {
+            console.log(data);
+            toastr.success('文件上传成功');
+        },
+        error: function (response) {
+            console.log(response);
+            toastr.warning('文件上传错误');
         }
     });
 }
