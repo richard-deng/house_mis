@@ -12,7 +12,8 @@ from handler import (
     questions,
     weixin,
     trade_order,
-    agreement
+    agreement,
+    carousel,
 )
 
 urls = (
@@ -66,6 +67,10 @@ urls = (
     # 协议
     ('^/mis/v1/api/agreement/view$', agreement.AgreementViewHandler),
 
+    # 轮播
+    ('^/mis/v1/api/carousel/list$', carousel.CarouselListHandler),
+    ('^/mis/v1/api/carousel/view$', carousel.CarouselViewHandler),
+    ('^/mis/v1/api/carousel/create$', carousel.CarouselCreateHandler),
 
     # 页面
     ('^/$', page.Root),
@@ -79,6 +84,7 @@ urls = (
     ('^/mis/v1/page/rate_list.html$', page.RateList),
     ('^/mis/v1/page/trade_list.html$', page.TradeList),
     ('^/mis/v1/page/agreement.html$', page.Agreement),
+    ('^/mis/v1/page/carousel_list.html$', page.Carousel),
 
     # 测试summernote文件上传
     ('^/mis/v1/page/test_summernote.html$', page.TestSummerNote),
