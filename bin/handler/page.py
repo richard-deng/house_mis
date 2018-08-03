@@ -62,7 +62,7 @@ class TradeList(core.Handler):
     def GET(self):
         self.write(template.render('trade_order.html'))
 
-class Agreement(core.Handler(:
+class Agreement(core.Handler):
     @house_check_session_for_page(g_rt.redis_pool, cookie_conf)
     def GET(self):
         self.write(template.render('agreement.html'))

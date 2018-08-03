@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
     $('#summernote').summernote({
-        // minHeight: 320,
+        minHeight: 500,
         // maxHeight: 320,
         // minWidth: 512,
         // maxWidth: 512,
@@ -44,8 +44,81 @@ $(document).ready(function(){
                         alert("上传失败...");
                     }
                 });
-            }
+            },
+	    onInit: function() {
+	        console.log('Summernote is launched');
+                initial_agreement();
+	    },
         }
+    });
+
+
+    function initial_agreement(){
+        var se_userid = window.localStorage.getItem('myid');
+        var get_data = {};
+        get_data.se_userid = se_userid;
+        $.ajax({
+            url: '/mis/v1/api/agreement/view',
+            type: 'GET',
+            dataType: 'json',
+            data: get_data,
+            success: function(data) {
+                var respcd = data.respcd;
+                if(respcd !== '0000'){
+                    var resperr = data.resperr;
+                    var respmsg = data.respmsg;
+                    var msg = resperr ? resperr : respmsg;
+                    toastr.warning(msg);
+                    return false;
+                } else {
+                    detail_data = data.data;
+                    content = detail_data.content;
+                    $('#summernote').summernote('code', content);
+                }
+            },
+            error: function(data) {
+                toastr.warning('请求数据异常');
+            }
+
+        });
+    }
+
+    $('#save_agreement').click(function(){
+        var se_userid = window.localStorage.getItem('myid');
+        var post_data = {};
+        post_data.se_userid = se_userid;
+         var content = $('#summernote').summernote('code');
+         if(!content){
+             toastr.warning('请填写协议内容然后保存');
+             return false;
+         }
+
+         post_data.content = content;
+         $.ajax({
+	     url: '/mis/v1/api/agreement/view',
+	     type: 'POST',
+	     dataType: 'json',
+	     data: post_data,
+	     success: function(data) {
+                 var respcd = data.respcd;
+                 if(respcd !== '0000'){
+                     var resperr = data.resperr;
+                     var respmsg = data.respmsg;
+                     var msg = resperr ? resperr : respmsg;
+                     toastr.warning(msg);
+                     return false;
+                 }
+                 else {
+                     toastr.success('保存修改成功');
+                     $("#boxViewForm").resetForm();
+                     $("#boxViewModal").modal('hide');
+                     $('#boxList').DataTable().draw();
+                 }
+	     },
+	     error: function(data) {
+                 toastr.warning('请求异常');
+	     }
+         });
     });
 
 });
