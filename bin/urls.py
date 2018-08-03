@@ -34,6 +34,7 @@ urls = (
     ('^/mis/v1/api/box/create$', box_list.BoxCreateHandler),
     ('^/mis/v1/api/box/view$', box_list.BoxViewHandler),
     ('^/mis/v1/api/icon/upload$', box_list.UploadIconHandler),
+    ('^/mis/v1/api/file/upload$', box_list.FileUploadHandler),
 
     # 订单
     ('^/mis/v1/api/order/list$', order.OrderListHandler),

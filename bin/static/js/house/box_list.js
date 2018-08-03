@@ -608,8 +608,11 @@ $(document).ready(function(){
         post_data.se_userid = se_userid;
         post_data.box_id = $('#text_add').text();
         post_data.name = $("#text_name_add").val();
+        post_data.save_type = $("#save_type_add").val();
         //post_data.content = $('#text_content_add').val();
-        post_data.content = $('#summernote').summernote('code');
+        if(post_data.save_type === "1") {
+            post_data.content = $('#summernote').summernote('code');
+        }
         post_data.available = $('#text_available_add').val();
         post_data.icon = $('#text_icon_name_add').text();
 
@@ -777,9 +780,20 @@ $(document).ready(function(){
         });
     });
 
+    $("#save_type_add").change(function () {
+        var save_type = $("#save_type_add").val();
+        if(save_type === "1"){
+            $("#file_add_div").hide();
+            $("#rich_text_add_div").show();
+        } else {
+            $("#file_add_div").show();
+            $("#rich_text_add_div").hide();
+        }
+    });
+
 });
 
-function upload_file(obj) {
+function upload_icon_file(obj) {
     var se_userid = window.localStorage.getItem('myid');
     var formData = new FormData();
     var name = $("#iconCreateUpload").val();
@@ -925,6 +939,35 @@ function upload_inline_create_file(obj) {
         },
         error: function (response) {
             console.log(response);
+        }
+    });
+}
+
+
+function upload_file(obj) {
+    var se_userid = window.localStorage.getItem('myid');
+    var formData = new FormData();
+    var name = $("#file_add").val();
+    $("#text_name_add").val(name);
+    formData.append("file", $("#file_add")[0].files[0]);
+    formData.append("name", name);
+    formData.append("se_userid", se_userid);
+    $.ajax({
+        url: "/mis/v1/api/file/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            console.log("before file send ");
+        },
+        success: function (data) {
+            console.log(data);
+            toastr.success('文件上传成功');
+        },
+        error: function (response) {
+            console.log(response);
+            toastr.warning('文件上传错误');
         }
     });
 }

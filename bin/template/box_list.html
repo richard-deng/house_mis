@@ -143,7 +143,7 @@
                     <div class="form-group">
                         <label for="box_icon_url_add" class="col-sm-2 control-label">图标链接</label>
                         <div class="col-sm-2">
-                            <input type="file" id="iconCreateUpload" onchange="upload_file(this)">
+                            <input type="file" id="iconCreateUpload" onchange="upload_icon_file(this)">
                         </div>
                         <div class="col-sm-5">
 
@@ -319,9 +319,12 @@
                 <form class="form-horizontal" id="textCreateForm" role="form">
 
                     <div class="form-group">
-                        <label for="text_name_add" class="col-md-2 control-label">名称</label>
+                        <label for="save_type_add" class="col-md-2 control-label">存储类型</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" id="text_name_add" name="text_name_add" placeholder="必填">
+                            <select class="form-control" id="save_type_add" name="save_type_add">
+                                <option value="1">富文本</option>
+                                <option value="2">文件</option>
+                            </select>
                         </div>
                     </div>
 
@@ -332,6 +335,20 @@
                                 <option value="0">关闭</option>
                                 <option value="1">打开</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="file_add_div">
+                        <label for="file_add" class="col-md-2 control-label">文件</label>
+                        <div class="col-md-2">
+                            <input type="file" id="file_add" onchange="upload_text_icon_file(this)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="text_name_add" class="col-md-2 control-label">名称</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="text_name_add" name="text_name_add" placeholder="必填">
                         </div>
                     </div>
 
@@ -351,13 +368,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <!--
-                        <label for="text_content_add" class="col-sm-2 control-label">内容</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" id="text_content_add" name="text_content_add" placeholder="必填"></textarea>
-                        </div>
-                        -->
+                    <div class="form-group" id="rich_text_add_div">
                         <div class="row">
                             <div class="col-md-7 col-md-offset-1">
                                 <textarea id="summernote" name="editordata"></textarea>
