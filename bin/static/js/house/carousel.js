@@ -84,7 +84,7 @@ $(document).ready(function () {
 
             },
             {
-                targets: 2,
+                targets: 3,
                 render: function (data, type, full) {
                     if (data === 1) {
                         return '启用'
@@ -98,7 +98,7 @@ $(document).ready(function () {
                 data: '操作',
                 render: function(data, type, full) {
                     var carousel_id = full.id;
-                    return "<button type='button' class='btn btn-warning btn-sm viewEdit' data-carousel_id="+carousel_id+">"+'编辑'+"</button>";
+                    return "<button type='button' class='btn btn-info btn-sm viewEdit' data-carousel_id="+carousel_id+">"+'编辑'+"</button>";
                 }
             }
         ],
