@@ -72,6 +72,11 @@ $(document).ready(function () {
                         var parent = obj.id;
                         console.log('obj=', obj);
                         parent_category = obj.original.category;
+                        save_type = obj.original.save_type;
+                        if(save_type == 2){
+                            toastr.warning('富文本叶子节点不能再添加');
+                            return false;
+                        }
                         var title = parent_category == 2 ? '问题' : '答案';
                         $("#normal_question_title").text(title);
                         $("#normal_question_parent").text(parent);
@@ -80,6 +85,10 @@ $(document).ready(function () {
                         $("label.error").remove();
                         // 添加时默认的是普通文本
                         $('#rich_text_add_div').hide();
+                        if(obj.original.category === 2){
+                            $('#save_type_add').attr("disabled", true);
+                            $('#normal_text_add_div').show();
+                        }
 
                         $("#addQuestionModal").modal();
                         /*
@@ -105,12 +114,25 @@ $(document).ready(function () {
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference);
                         var obj = inst.get_node(data.reference);
+                        console.log('modify obj:', obj);
                         var question_id = obj.id;
                         $("#modify_question_id").text(question_id);
-                        var text = obj.text;
+                        var save_type = obj.original.save_type;
+                        $('#modify_save_type').text(save_type);
                         $('#renameForm').resetForm();
                         $("label.error").remove();
-                        $("#rename").val(text);
+                        if(save_type === 1) {
+                            var text = obj.text;
+                            $("#rename").val(text);
+                            $("#rename_view_div").show();
+                            $("#rich_text_view_div").hide();
+                        } else {
+                            var content = obj.original.content;
+                            $("#summernote_view").summernote('code', content);
+                            $("#rename_view_div").hide();
+                            $("#rich_text_view_div").show();
+                        } 
+
                         $('#renameModal').modal();
                     }
                 },
@@ -219,7 +241,9 @@ $(document).ready(function () {
         var root_question = $('#root_question_add').val();
         if(root_question){
             var root_id = -1;
-            create_node(root_id, root_question, 1);
+            var save_type = 1;
+            var category = 1;
+            create_node(root_id, root_question, category, save_type);
             $('#addRootQuestionModal').modal('hide');
             window.location.reload();
         }
@@ -308,37 +332,50 @@ $(document).ready(function () {
     });
     */
     $('#questionCreateSubmit').click(function () {
-        var question_vt = $('#addQuestionCreateForm').validate({
-            rules: {
-                question_add: {
-                    required: true,
-                    maxlength: 200
-                }
-            },
-            messages: {
-                question_add: {
-                    required: '请输入问题内容',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                }
-            },
-            errorPlacement: function(error, element){
-                if(element.is(':checkbox')){
-                    error.appendTo(element.parent().parent().parent());
-                } else {
-                    error.insertAfter(element);
-                }
-            }
-        });
-        var ok = question_vt.form();
-        if(!ok){
-            return false;
-        }
-        var question = $('#question_add').val();
-        var parent = $('#normal_question_parent').text();
+        var content = '';
+        var name = '';
+        var save_type = $('#save_type_add').val();
         var category = $('#normal_question_category').text();
+        if(save_type === "1") {
+            var question_vt = $('#addQuestionCreateForm').validate({
+                rules: {
+                    question_add: {
+                        required: true,
+                        maxlength: 200
+                    }
+                },
+                messages: {
+                    question_add: {
+                        required: '请输入问题内容',
+                        maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                    }
+                },
+                errorPlacement: function(error, element){
+                    if(element.is(':checkbox')){
+                        error.appendTo(element.parent().parent().parent());
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+            var ok = question_vt.form();
+            if(!ok){
+                return false;
+            }
+            name = $('#question_add').val();
+        } else {
+            name = '点击修改查看详情';
+            content = $('#summernote').summernote('code');
+            if(!content){
+                toastr.warning("请填写富文本内容");
+                return false;
+            }
+        }
+
+        var parent = $('#normal_question_parent').text();
         var new_category = category === '1' ? 2: 1;
-        console.log('category=', category, 'new_category=', new_category);
-        create_node(parent, question, new_category);
+        console.log('category=', category, 'new_category=', new_category, 'save_type=', save_type);
+        create_node(parent, name, new_category, save_type, content);
         $('#addQuestionModal').modal('hide');
     });
 
@@ -481,34 +518,44 @@ $(document).ready(function () {
     });
     */
     $('#renameSubmit').click(function () {
-        var rename_content_vt = $('#renameForm').validate({
-            rules: {
-                rename: {
-                    required: true,
-                    maxlength: 200
+        var name = '';
+        var content = '';
+        var save_type = $("#modify_save_type").text();
+        console.log('save_type: ', save_type);
+        if(save_type === '1') {
+            console.log('1');
+            var rename_content_vt = $('#renameForm').validate({
+                rules: {
+                    rename: {
+                        required: true,
+                        maxlength: 200
+                    }
+                },
+                messages: {
+                    rename: {
+                        required: '请输入修改内容',
+                        maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+                    }
+                },
+                errorPlacement: function(error, element){
+                    if(element.is(':checkbox')){
+                        error.appendTo(element.parent().parent().parent());
+                    } else {
+                        error.insertAfter(element);
+                    }
                 }
-            },
-            messages: {
-                rename: {
-                    required: '请输入修改内容',
-                    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
-                }
-            },
-            errorPlacement: function(error, element){
-                if(element.is(':checkbox')){
-                    error.appendTo(element.parent().parent().parent());
-                } else {
-                    error.insertAfter(element);
-                }
+            });
+            var ok = rename_content_vt.form();
+            if(!ok){
+                return false;
             }
-        });
-        var ok = rename_content_vt.form();
-        if(!ok){
-            return false;
+            name = $('#rename').val();
+        } else {
+            console.log('2');
+            content = $("#summernote_view").summernote('code'); 
         }
-        var content = $('#rename').val();
         var question_id = $('#modify_question_id').text();
-        update_node(question_id, content);
+        update_node(question_id, name, content);
         $('#renameModal').modal('hide');
     });
 
@@ -585,20 +632,34 @@ $(document).ready(function () {
     });
 
     $('#save_type_add').change(function () {
+        var current_category = $('#normal_question_category').text();
+        // 在答案(2)下添加问题是只有文本
+        // 在问题(1)下添加答案可以有富文本
         var save_type = $('#save_type_add').val();
-        if(save_type === "1"){
-            // 1是普通文本
-            $('#rich_text_add_div').hide();
+        if(current_category === "1"){
+            // 问题
+            if(save_type === "1"){
+                // 1是普通文本
+                $('#rich_text_add_div').hide();
+                $('#normal_text_add_div').show();
+            } else {
+                // 2是富文本
+                $('#normal_text_add_div').hide();
+                $('#rich_text_add_div').show();
+            }
         } else {
-            // 2是富文本
-            $('#save_type_add').hide();
+            // 答案下
+            $('#rich_text_add_div').hide();
+            $('#normal_text_add_div').show();
+
         }
+
     });
 
     $('#summernote').summernote({
         minHeight: 420,
         // maxHeight: 320,
-        minWidth: 512,
+        // minWidth: 512,
         // maxWidth: 512,
         focus: true,
         lang: 'zh-CN',
@@ -643,13 +704,65 @@ $(document).ready(function () {
         }
     });
 
-    function create_node(sel_id, name, category) {
+
+    $('#summernote_view').summernote({
+        minHeight: 420,
+        // maxHeight: 320,
+        // minWidth: 512,
+        // maxWidth: 512,
+        focus: true,
+        lang: 'zh-CN',
+        dialogsInBody: true,
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['insert', ['picture', 'link']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ],
+        callbacks: {
+            onImageUpload: function(files) {
+                //由于summernote上传图片上传的是二进制数据
+                //所以这里可以自己重新上传图片方法
+                var formData = new FormData();
+                var name = files[0]['name'];
+                console.log('name:', name);
+                formData.append('file',files[0]);
+                formData.append("name", name);
+                $.ajax({
+                    url : '/mis/v1/api/icon/upload', //后台文件上传接口
+                    type : 'POST',
+                    data : formData,
+                    processData : false,
+                    contentType : false,
+                    success : function(data) {
+                        console.log('data:', data);
+                        detail_data = data.data;
+                        src = detail_data.icon_url;
+                        //设置到编辑器中
+                        $('#summernote_view').summernote('insertImage',src,'img');
+                    },
+                    error:function(){
+                        alert("上传失败...");
+                    }
+                });
+            }
+        }
+    });
+
+
+    function create_node(sel_id, name, category, save_type, content='') {
         var post_data = {};
         var se_userid = window.localStorage.getItem('myid');
         post_data.se_userid = se_userid;
         post_data.name = name;
         post_data.category = category;
         post_data.parent = sel_id;
+        post_data.save_type = save_type;
+        post_data.content = content;
         $.ajax({
             url: '/mis/v1/api/question/create',
             type: 'POST',
@@ -678,6 +791,7 @@ $(document).ready(function () {
                             setTimeout(function () { inst.edit(new_node); },0);
                         }
                     });
+                    default_parent = -1;
                     var ref = $('#container').jstree(true);
                     ref.refresh();
                 }
@@ -688,12 +802,18 @@ $(document).ready(function () {
         });
     }
 
-    function update_node(question_id, name) {
+    function update_node(question_id, name='', content='') {
         var post_data = {};
         var se_userid = window.localStorage.getItem('myid');
         post_data.se_userid = se_userid;
-        post_data.name = name;
         post_data.question_id = question_id;
+        if(name){
+            post_data.name = name;
+        }
+        if(content){
+            post_data.content = content;
+        }
+
         $.ajax({
             url: '/mis/v1/api/question/update',
             type: 'POST',
@@ -710,6 +830,7 @@ $(document).ready(function () {
                 }
                 else {
                     //ref.set_text(sel, content);
+                    default_parent = -1;
                     var ref = $('#container').jstree(true);
                     ref.refresh();
                 }

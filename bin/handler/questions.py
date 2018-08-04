@@ -1,6 +1,8 @@
 # coding: utf-8
 import logging
+import base64
 import json
+import traceback
 
 from config import cookie_conf
 from runtime import g_rt
@@ -37,6 +39,8 @@ class QuestionAddHandler(BaseHandler):
         Field('name', T_STR, False),
         Field('category', T_STR, False),
         Field('parent', T_INT, False),
+        Field('save_type', T_INT, False),
+        Field('content', T_STR, True),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -46,6 +50,14 @@ class QuestionAddHandler(BaseHandler):
         params = self.validator.data
         log.debug('class=QuestionAddHandler|params=%s', params)
         name = self.req.input()['name']
+        save_type = params['save_type']
+        category = params['category']
+        content = self.req.input()['content']
+        # 如果是答案且存储类型为富文本校验content
+        if content:
+            base64_str = base64.b64encode(content)
+            params['content'] = base64_str
+
         params['name'] = name
         params.update({
             'utime': tools.gen_now_str(),
@@ -64,6 +76,7 @@ class QuestionViewHandler(BaseHandler):
     _post_handler_fields = [
         Field('name', T_STR, True),
         Field('status', T_INT, True),
+        Field('content', T_STR, True),
         Field('question_id', T_INT, False),
     ]
 
@@ -77,6 +90,9 @@ class QuestionViewHandler(BaseHandler):
         question_id = params.get('question_id')
         question = Questions(question_id)
         question.load()
+        if question.data['content']:
+            content = base64.decode(question.data['content'])
+            params['content'] = content
         return success(data=question.data)
 
 
@@ -89,10 +105,14 @@ class QuestionViewHandler(BaseHandler):
         question_id = params.pop('question_id')
         status = params.pop('status')
         name = params.pop('name')
+        content = self.req.input().get('content')
         if status:
             values['status'] = status
         if name:
             values['name'] = name
+        if content:
+            content_str = base64.b64encode(content)
+            values['content'] = content_str
         values['utime'] = tools.gen_now_str()
         question = Questions(question_id)
         ret = question.update(values)
@@ -153,5 +173,12 @@ class QuestionsLazyLoadHandler(BaseHandler):
         if not parent:
             parent = -1
         data = Questions.load_current_children(parent=parent)
+        if data:
+            for record in data:
+                if not record['content']:
+                    continue
+                else:
+                    content = base64.b64decode(record['content'])
+                    record['content'] = content
         ret.extend(data)
         return json.dumps(ret)
