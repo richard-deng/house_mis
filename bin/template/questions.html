@@ -8,6 +8,7 @@
 <link href="/mis/static/css/house/define_label_error.css" rel="stylesheet">
 <link href="/mis/static/css/jquery-confirm.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/mis/static/css/themes/default/style.min.css" />
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
 
 </%block>
 
@@ -85,12 +86,35 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" id="addQuestionCreateForm" role="form">
+
                         <div class="form-group">
+                            <label for="save_type_add" class="col-md-2 control-label">存储类型</label>
+                            <div class="col-md-10">
+                                <select class="form-control" id="save_type_add" name="save_type_add">
+                                    <option value="1" selected>普通文本</option>
+                                    <option value="2">富文本</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="normal_text_add_div">
                             <label for="question_add" class="col-sm-2 control-label" id="normal_question_title">问题</label>
                             <div class="col-sm-10">
                                 <textarea rows="10" cols="30" class="form-control" id="question_add" name="question_add" placeholder="必填"></textarea>
                             </div>
                         </div>
+
+                        <div class="form-group" id="rich_text_add_div">
+                            <div class="row">
+                                <div class="col-md-7 col-md-offset-1">
+                                    <textarea id="summernote" name="editordata"></textarea>
+                                </div>
+                                <div class="col-md-4" id="article_content">
+
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -185,5 +209,7 @@
 <script src="/mis/static/js/jquery.form.js" type="text/javascript"></script>
 <script src="/mis/static/js/jstree.min.js"></script>
 <script src="/mis/static/js/jquery-confirm.min.js" type="text/javascript"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/lang/summernote-zh-CN.js"></script>
 <script src="/mis/static/js/house/questions.js" type="text/javascript"></script>
 </%block>
