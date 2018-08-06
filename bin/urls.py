@@ -70,8 +70,10 @@ urls = (
     # 协议
     ('^/mis/v1/api/agreement/view$', agreement.AgreementViewHandler),
 
-    # 滚动文字
+    # 横幅
+    ('^/mis/v1/api/banner/list$', banner.BannerListHandler),
     ('^/mis/v1/api/banner/view$', banner.BannerViewHandler),
+    ('^/mis/v1/api/banner/create$', banner.BannerCreateHandler),
 
     # 轮播
     ('^/mis/v1/api/carousel/list$', carousel.CarouselListHandler),

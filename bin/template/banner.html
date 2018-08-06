@@ -29,6 +29,49 @@
                     横幅信息
                 </div>
                 <div class="panel-body">
+                    <div class="row">
+                        <form class="form-inline" id="banner_list_query">
+
+                            <div class="form-group">
+                                <label for="banner_title">标题</label>
+                                <input type="text" class="form-control" id="banner_title" name="banner_title" placeholder="">
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="banner_search">搜索</button>
+                            <button type="button" class="btn btn-default" id="banner_create">添加</button>
+                        </form>
+                        <label id="query_label_error"></label>
+                    </div>
+
+                    <div class="row">
+                        <table id="bannerList" class="display table table-striped table-bordered table-hover dataTable no-footer dtr-inline" cellspacing="0" width="100%">
+                            <thead>
+                            <tr>
+                                <th>标题</th>
+                                <th>是否可用</th>
+                                <th>创建时间</th>
+                                <th>更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    横幅信息
+                </div>
+                <div class="panel-body">
                     <form class="form-inline box-list-query">
                         <button type="button" class="btn btn-default" id="save_banner">保存</button>
                     </form>
@@ -41,6 +84,7 @@
             </div>
         </div>
     </div>
+    -->
 
 </%block>
 
