@@ -62,6 +62,8 @@ class BannerViewHandler(BaseHandler):
         banner = Banners(banner_id)
         if not banner.data:
             return error(RESP_CODE.DATAERR)
+        content = banner.data['content']
+        banner.data['content'] = base64.b64decode(content)
         return success(data=banner.data)
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
