@@ -83,7 +83,7 @@ class BannerViewHandler(BaseHandler):
 class BannerCreateHandler(BaseHandler):
 
     _post_handler_fields = [
-        Field('name', T_STR, False),
+        Field('title', T_STR, False),
         Field('content', T_STR, False)
     ]
 

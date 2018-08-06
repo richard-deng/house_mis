@@ -76,7 +76,8 @@ $(document).ready(function(){
             {
                 targets: 1,
                 render: function (data, type, full) {
-                    if (data === '1') {
+                    console.log('data=', data, data === '0');
+                    if (data === 0) {
                         return '启用'
                     } else {
                         return '关闭'
@@ -94,7 +95,7 @@ $(document).ready(function(){
         ],
         'columns': [
             { data: 'title'},
-            { data: 'available'},
+            { data: 'status'},
             { data: 'ctime'},
             { data: 'utime'}
         ],
@@ -262,7 +263,7 @@ $(document).ready(function(){
                         full_src = img_src_prefix + src;
                         //设置到编辑器中
                         // $('#summernote_view').summernote('insertImage',src,'img');
-                        $('#summernote_view').summernote('insertImage', full_src, 'img');
+                        $('#content_view').summernote('insertImage', full_src, 'img');
                     },
                     error:function(){
                         alert("上传失败...");
@@ -312,7 +313,7 @@ $(document).ready(function(){
                         full_src = img_src_prefix + src;
                         //设置到编辑器中
                         // $('#summernote_view').summernote('insertImage',src,'img');
-                        $('#summernote_view').summernote('insertImage', full_src, 'img');
+                        $('#content_create').summernote('insertImage', full_src, 'img');
                     },
                     error:function(){
                         alert("上传失败...");
@@ -395,5 +396,35 @@ $(document).ready(function(){
             }
         });
     });
+
+
+    $("#banner_search").click(function(){
+        var banner_query_vt = $('#banner_list_query').validate({
+            rules: {
+                banner_title: {
+                    required: false,
+                    maxlength: 32
+                }
+            },
+            messages: {
+                banner_title: {
+                    required: '请输入标题'
+                }
+            },
+            errorPlacement: function(error, element){
+                var $error_element = element.parent().parent().next();
+                $error_element.text('');
+                error.appendTo($error_element);
+            }
+        });
+        var ok = banner_query_vt.form();
+        if(!ok){
+            $("#query_label_error").show();
+            $("#query_label_error").fadeOut(1400);
+            return false;
+        }
+        $('#bannerList').DataTable().draw();
+    });
+
 
 });
