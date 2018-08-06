@@ -7,7 +7,7 @@ from config import cookie_conf
 from runtime import g_rt
 from house_base.base_handler import BaseHandler
 from house_base.banner import Banners
-from house_baee.tools import trans_time
+from house_base.tools import trans_time
 from house_base.response import success, error, RESP_CODE
 from house_base.session import house_check_session
 
