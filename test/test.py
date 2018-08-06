@@ -17,7 +17,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         self.port = 8083
         self.timeout = 2000
 
-        self.headers = {'sessionid': 'e4462366-31f1-4d1d-aadb-5bb43b95fb60'}
+        self.headers = {'sessionid': '3505f2d4-85a0-4391-aacf-2a68e231c30c'}
         self.cookie = self.headers
         self.server = [
             {
@@ -133,7 +133,7 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
-    # @unittest.skip("skipping")
+    @unittest.skip("skipping")
     def test_rate_view_post(self):
         self.url = '/mis/v1/api/rate/view'
         self.send.update({'rate_id': 1, 'rate': 4.32})
@@ -142,6 +142,14 @@ class TestHouseMisInstrument(unittest.TestCase):
         respcd = json.loads(ret).get('respcd')
         self.assertEqual(respcd, '0000')
 
+    # @unittest.skip("skipping")
+    def test_weixin_refund(self):
+        self.url = '/mis/v1/api/weixin/refund'
+        self.send.update({'syssn': '201807290013408839', 'txamt': 1})
+        ret = self.client.post(self.url, self.send, cookies=self.cookie)
+        log.info(ret)
+        respcd = json.loads(ret).get('respcd')
+        self.assertEqual(respcd, '0000')
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestHouseMisInstrument)

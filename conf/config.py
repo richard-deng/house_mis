@@ -77,8 +77,20 @@ ALLOW_ADD_USER_ID = [1]
 cookie_conf = { 'expires':60*60*24*3, 'max_age':60*60*24*3, 'domain':'mis.xunchengfangfu.com', 'path':'/mis'}
 # 上传的文件存放位置
 SAVE_PATH = '/home/xunchengfangfu/house/house_mis/bin/static/upload/icon/'
+# 上传的文件存储位置
+FILE_SAVE_PATH = '/home/xunchengfangfu/house/house_mis/bin/static/upload/file/'
 # 
 TAIL_PATH = '/mis/static/upload/icon/'
 # 链接前缀
 # BASE_URL = 'http://' + cookie_conf.get('domain') + ':' + str(PORT) + TAIL_PATH
 BASE_URL = 'http://' + cookie_conf.get('domain') + TAIL_PATH
+
+# 退款需要的参数
+API_KEY = ''
+APPID = ''
+MCH_ID = ''
+SECRET = ''
+# 协议文件
+AGREEMENT = '/home/xunchengfangfu/house/house_mis/data/agreement.html'
+# 滚动文字文案
+BANNER_TEXT = '/home/xunchengfangfu/house/house_mis/data/banner.txt'

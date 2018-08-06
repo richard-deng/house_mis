@@ -1,12 +1,12 @@
 # coding: utf-8
 import logging
 
-from config import SAVE_PATH
+from config import SAVE_PATH, FILE_SAVE_PATH
 from config import cookie_conf
 from config import BASE_URL
 from config import TAIL_PATH
 from runtime import g_rt
-from tools import gen_now_str
+from tools import gen_now_str, find_parent_parent
 from house_base import tools as base_tools
 from house_base.base_handler import BaseHandler
 from house_base.box_list import BoxList
@@ -25,6 +25,7 @@ class BoxListHandler(BaseHandler):
         Field('page', T_INT, False),
         Field('maxnum', T_INT, False),
         Field('name', T_STR, True),
+        Field('parent', T_INT, True),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)
@@ -36,11 +37,18 @@ class BoxListHandler(BaseHandler):
         info, num = BoxList.page(**params)
         data['num'] = num
         if info:
+            parents = [item['parent'] for item in info]
+            parent_parent = find_parent_parent(parents)
             for item in info:
                 item['id'] = str(item['id'])
+                item['parent'] = str(item['parent'])
                 icon_name = item['icon']
                 item['icon'] = BASE_URL + icon_name
                 item['icon_name'] = icon_name
+                if item['parent'] != -1:
+                    item['parent_parent'] = str(parent_parent[int(item['parent'])]) if parent_parent else -1
+                else:
+                    item['parent_parent'] = -1
                 base_tools.trans_time(item, BoxList.DATETIME_KEY)
         data['info'] = info
         return success(data=data)
@@ -65,6 +73,22 @@ class UploadIconHandler(BaseHandler):
         return success(data={"icon_url": icon_url, "icon_name": filename})
 
 
+class FileUploadHandler(BaseHandler):
+
+    # @house_check_session(g_rt.redis_pool, cookie_conf)
+    # @with_validator_self
+    def _post_handler(self):
+        data = self.req.input()
+        all_name = data.get('name')
+        file = data.get('file')
+        content = file.read()
+        filename =  all_name
+        full_name = FILE_SAVE_PATH + filename
+        with open(full_name, 'wb+') as f:
+            f.write(content)
+        return success(data={})
+
+
 class BoxCreateHandler(BaseHandler):
 
     _post_handler_fields = [
@@ -73,6 +97,7 @@ class BoxCreateHandler(BaseHandler):
         Field('available', T_INT, False),
         Field('priority', T_INT, False),
         Field('icon', T_STR, False),
+        Field('parent', T_INT, False),
     ]
 
     @house_check_session(g_rt.redis_pool, cookie_conf)

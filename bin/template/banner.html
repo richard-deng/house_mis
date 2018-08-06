@@ -1,0 +1,55 @@
+## -*- coding: utf-8 -*-
+<%inherit file="/base.html" />
+<%block name="title">
+横幅信息
+</%block>
+
+<%block name="head_media">
+<link href="/mis/static/css/house/define_label_error.css" rel="stylesheet">
+
+<style>
+    .dataTables_length {
+        padding-left: 30px!important;
+    }
+    textarea {
+        width: 900px!important;
+        height: 500px!important;
+        // max-width: 500px!important;
+        // max-height: 400px!important;
+    }
+</style>
+</%block>
+
+<%block name="page">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    横幅信息
+                </div>
+                <div class="panel-body">
+                    <form class="form-inline box-list-query">
+                        <button type="button" class="btn btn-default" id="save_banner">保存</button>
+                    </form>
+                    <label id="query_label_error"></label>
+
+                    <div class="row">
+                        <textarea id="banner_edit"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</%block>
+
+
+<%block name="body_media">
+    <script src="/mis/static/js/jquery.validate.js" type="text/javascript"></script>
+    <script src="/mis/static/js/jquery.validate.messages_cn.js" type="text/javascript"></script>
+    <script src="/mis/static/js/jquery.form.js" type="text/javascript"></script>
+    <script src="/mis/static/js/toastr.js" type="text/javascript"></script>
+    <script src="/mis/static/js/house/base.js" type="text/javascript"></script>
+    <script src="/mis/static/js/house/banner.js" type="text/javascript"></script>
+</%block>
