@@ -89,7 +89,12 @@ $(document).ready(function(){
                 data: '操作',
                 render: function(data, type, full) {
                     var banner_id = full.id;
-                    return "<button type='button' class='btn btn-info btn-sm viewEdit' data-banner_id="+banner_id+">"+'编辑'+"</button>";
+                    var status = full.status;
+                    var msg = '关闭' ? status === 0: '打开';
+                    var new_status = 1 ? status === 0: 0;
+                    var view = "<button type='button' class='btn btn-info btn-sm viewEdit' data-banner_id="+banner_id+">"+'编辑'+"</button>";
+                    var del = "<button type='button' class='btn btn-info btn-sm deleteBanner' data-banner_id="+banner_id+ 'data-new_status=' + new_status +">"+ msg +"</button>";
+                    return view + del;
                 }
             }
         ],
@@ -112,6 +117,60 @@ $(document).ready(function(){
                 'sLast': '尾页'
             }
         }
+    });
+
+    $(document).on('click', '.deleteBanner', function () {
+        var banner_id = $(this).data('banner_id');
+        var new_status = $(this).data('new_status');
+        $.confirm({
+            title: '请确认',
+            content: '确认删除？',
+            type: 'blue',
+            typeAnimated: false,
+            buttons: {
+                confirm: {
+                    text: '确认',
+                    btnClass: 'btn-red',
+                    action: function() {
+                        console.log('delete');
+                        var se_userid = window.localStorage.getItem('myid');
+                        var post_data = {};
+                        post_data.se_userid = se_userid;
+                        post_data.status = new_status;
+                        post_data.banner_id = banner_id;
+                        $.ajax({
+                            url: '/mis/v1/api/banner/state/change',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: post_data,
+                            success: function(data) {
+                                var respcd = data.respcd;
+                                if(respcd !== '0000'){
+                                    var resperr = data.resperr;
+                                    var respmsg = data.respmsg;
+                                    var msg = resperr ? resperr : respmsg;
+                                    toastr.warning(msg);
+                                    return false;
+                                }
+                                else {
+                                    toastr.success('操作成功');
+                                    $('#bannerList').DataTable().draw();
+                                }
+                            },
+                            error: function(data) {
+                                toastr.warning('请求异常');
+                            }
+                        });
+                    }
+                },
+                cancel: {
+                    text: '取消',
+                    action: function() {
+                        console.log('clicked cancel');
+                    }
+                }
+            }
+        });
     });
 
     $(document).on('click', '.viewEdit', function(){

@@ -74,6 +74,7 @@ urls = (
     ('^/mis/v1/api/banner/list$', banner.BannerListHandler),
     ('^/mis/v1/api/banner/view$', banner.BannerViewHandler),
     ('^/mis/v1/api/banner/create$', banner.BannerCreateHandler),
+    ('^/mis/v1/api/banner/state/change$', banner.BannerStatusChangeHandler),
 
     # 轮播
     ('^/mis/v1/api/carousel/list$', carousel.CarouselListHandler),

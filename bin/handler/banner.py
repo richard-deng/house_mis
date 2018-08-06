@@ -101,3 +101,26 @@ class BannerCreateHandler(BaseHandler):
         if ret != 1:
             return error(RESP_CODE.DATAERR)
         return success(data={})
+
+
+class BannerStatusChangeHandler(BaseHandler):
+
+    _post_handler_fields = [
+        Field('banner_id', T_INT, False),
+        Field('status', T_INT, False),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _post_handler(self):
+        params = self.validator.data
+        banner_id = params['banner_id']
+        status = params['status']
+        banner = Banners(banner_id)
+        if not banner.data:
+            return error(RESP_CODE.DATAERR)
+        values = {'status': status}
+        ret = banner.update(values=values)
+        if ret != 1:
+            return error(RESP_CODE.DATAERR)
+        return success(data={})
