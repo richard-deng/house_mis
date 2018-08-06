@@ -279,7 +279,7 @@ $(document).ready(function () {
                 }
             },
             errorPlacement: function(error, element){
-                if(element.is(':checkcarousel')){
+                if(element.is(':checkbox')){
                     error.appendTo(element.parent().parent().parent());
                 } else {
                     error.insertAfter(element);
