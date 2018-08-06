@@ -29,7 +29,7 @@ class AgreementViewHandler(BaseHandler):
         data = {'content': ''}
         with open(AGREEMENT, 'rb') as f:
             content = f.read()
-            data['content'] = content
+            data['content'] = content.decode('utf-8')
         return success(data=data)
 
     @house_check_session(g_rt.redis_pool, cookie_conf)

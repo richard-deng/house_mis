@@ -3,6 +3,7 @@
  */
 $(document).ready(function () {
     //get_tree();
+    var img_src_prefix = 'http://mis.xunchengfangfu.com';
     var default_parent = -1;
     var se_userid = window.localStorage.getItem('myid');
     var question_url = '/mis/v1/api/question/list?se_userid=' + se_userid;
@@ -693,8 +694,10 @@ $(document).ready(function () {
                         console.log('data:', data);
                         detail_data = data.data;
                         src = detail_data.icon_url;
+                        full_src = img_src_prefix + src;
                         //设置到编辑器中
-                        $('#summernote').summernote('insertImage',src,'img');
+                        // $('#summernote').summernote('insertImage',src,'img');
+                        $('#summernote').summernote('insertImage', full_src, 'img');
                     },
                     error:function(){
                         alert("上传失败...");
@@ -742,8 +745,10 @@ $(document).ready(function () {
                         console.log('data:', data);
                         detail_data = data.data;
                         src = detail_data.icon_url;
+                        full_src = img_src_prefix + src;
                         //设置到编辑器中
-                        $('#summernote_view').summernote('insertImage',src,'img');
+                        // $('#summernote_view').summernote('insertImage',src,'img');
+                        $('#summernote_view').summernote('insertImage', full_src, 'img');
                     },
                     error:function(){
                         alert("上传失败...");

@@ -98,7 +98,8 @@ $(document).ready(function () {
                     }
                     var view ="<button type='button' class='btn btn-info btn-sm viewEdit' data-user_id="+user_id+">"+'查看'+"</button>";
                     var del ="<button type='button' class='btn btn-warning btn-sm deleteUser' data-user_id="+user_id+ ' data-user_state='+ user_state +">"+msg+"</button>";
-                    return view + del;
+                    var passwd ="<button type='button' class='btn btn-primary btn-sm changePassword' data-user_id="+user_id+">"+'修改密码'+"</button>";
+                    return view + del + passwd;
                 }
             }
         ],
@@ -296,6 +297,91 @@ $(document).ready(function () {
         });
 
     });
+
+    $(document).on('click', '.changePassword', function(){
+        var user_id = $(this).data('user_id');
+        $('#change_password_user_id').text(user_id);
+        $('#passwordChangeForm').resetForm();
+        $("label.error").remove();
+        $('#passwordChangeModal').modal();
+    });
+
+    $('#passwordChangeSubmit').click(function(){
+	var password_vt = $('#passwordChangeForm').validate({
+	    rules: {
+		password_change: {
+		    required: true,
+		    maxlength: 20
+		},
+		password_confirm: {
+		    required: true,
+		    maxlength: 20
+		},
+	    },
+	    messages: {
+		password_change: {
+		    required: '请输入密码',
+		    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+		},
+		password_confirm: {
+		    required: '请输入确认密码',
+		    maxlength: $.validator.format("请输入一个 长度最多是 {0} 的字符串")
+		}
+	    },
+	    errorPlacement: function(error, element){
+		if(element.is(':checkbox')){
+		    error.appendTo(element.parent().parent().parent());
+		} else {
+		    error.insertAfter(element);
+		}
+	    }
+	});
+	var ok = password_vt.form();
+	if(!ok){
+	    return false;
+	}
+
+        var password_change = $('#password_change').val();
+        var password_confirm = $('#password_confirm').val();
+        if(password_change != password_confirm){
+            toastr.warning('密目不匹配');
+            return false;
+        }
+
+        var post_data = {};
+        var se_userid = window.localStorage.getItem('myid');
+        var user_id = $('#change_password_user_id').text();
+        post_data.se_userid = se_userid;
+        post_data.user_id = user_id;
+        post_data.password = password_confirm;
+
+	$.ajax({
+	    url: '/mis/v1/api/user/password/change',
+	    type: 'POST',
+	    dataType: 'json',
+	    data: post_data,
+	    success: function(data) {
+		var respcd = data.respcd;
+		if(respcd !== '0000'){
+		    var resperr = data.resperr;
+		    var respmsg = data.respmsg;
+		    var msg = resperr ? resperr : respmsg;
+		    toastr.warning(msg);
+		    return false;
+		}
+		else {
+		    toastr.success('密码修改成功');
+                    $('#passwordChangeModal').modal('hide'); 
+		}
+	    },
+	    error: function(data) {
+		toastr.warning('请求异常');
+	    }
+	});
+
+
+    });
+
 
     $(document).on('click', '.deleteUser', function(){
         var se_userid = window.localStorage.getItem('myid');

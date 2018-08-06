@@ -1,5 +1,5 @@
 # coding: utf-8
-
+import hashlib
 import tools
 import logging
 import traceback
@@ -7,7 +7,7 @@ import traceback
 from runtime import g_rt
 from config import cookie_conf, ALLOW_ADD_USER_ID
 from house_base.base_handler import BaseHandler
-from house_base.user import User
+from house_base.user import User, gen_passwd
 from constant import INVALID_VALUE
 from zbase.base.dbpool import with_database
 from house_base.response import error, success, RESP_CODE
@@ -183,6 +183,31 @@ class UserStateChangeHandler(BaseHandler):
         user_id = params['user_id']
         user = User(user_id)
         ret = user.update(value={'state': user_state})
+        if ret != 1:
+            return error(RESP_CODE.DBERR)
+        return success(data={})
+
+
+class UserPasswordChange(BaseHandler):
+
+    _post_handler_fields = [
+        Field('user_id', T_INT, False),
+        Field('password', T_STR, False),
+    ]
+
+    @house_check_session(g_rt.redis_pool, cookie_conf)
+    @with_validator_self
+    def _post_handler(self):
+        values = {}
+        params = self.validator.data
+        user_id = params['user_id']
+        password = params['password']
+        h = hashlib.md5(password)
+        md5_password = h.hexdigest()
+        log.info('md5_password=%s', md5_password)
+        values['password'] = gen_passwd(md5_password)
+        user = User(user_id)
+        ret = user.update(value=values)
         if ret != 1:
             return error(RESP_CODE.DBERR)
         return success(data={})
