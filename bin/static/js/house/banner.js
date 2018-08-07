@@ -88,12 +88,19 @@ $(document).ready(function(){
                 targets: 4,
                 data: '操作',
                 render: function(data, type, full) {
+                    var msg = '';
+                    var new_status = '';
                     var banner_id = full.id;
                     var status = full.status;
-                    var msg = '关闭' ? status === 0: '打开';
-                    var new_status = 1 ? status === 0: 0;
+                    if(status === 0){
+                        msg = '关闭';
+                        new_status = 1;
+                    } else {
+                        msg = '打开';
+                        new_status = 0;
+                    }
                     var view = "<button type='button' class='btn btn-info btn-sm viewEdit' data-banner_id="+banner_id+">"+'编辑'+"</button>";
-                    var del = "<button type='button' class='btn btn-info btn-sm deleteBanner' data-banner_id="+banner_id+ 'data-new_status=' + new_status +">"+ msg +"</button>";
+                    var del ="<button type='button' class='btn btn-warning btn-sm deleteBanner' data-banner_id="+banner_id+ ' data-new_status='+ new_status +">"+msg+"</button>";
                     return view + del;
                 }
             }
